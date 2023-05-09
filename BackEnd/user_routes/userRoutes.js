@@ -65,15 +65,18 @@ router.get("/:id", async(req, res)=>{
         const token = authHeader.split(' ')[1]
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            const email = decoded.email
             const id = decoded.id
-            const userExists = await User.find({email: email, _id: id})
+            userSearching = await User.findById(id)
+            if(userSearching) {
                 userFromDB = await User.find({_id:req.params.id})
                 if(userFromDB.length == 1) {
                     res.status(200).json(userFromDB)
                 } else {
                     res.status(404).json("User not found")
                 }
+            } else {
+                res.status(404).json("Invalid token")
+            }
         } catch (error) {
             res.status(403).json('Not authorized to access this route')
         }
@@ -84,13 +87,67 @@ router.get("/:id", async(req, res)=>{
 
 
 // delete a user
+router.delete("/delete", async(req, res)=>{
+    try {
+        const authHeader = req.headers.authorization
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(403).json('No token provided')
+        }
+        const token = authHeader.split(' ')[1]
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET)
+            const email = decoded.email
+            const id = decoded.id
+            const userToDelete = await User.findOneAndDelete({email: email, _id: id})
+            if(userToDelete) {
+                res.status(200).json("User has been deleted from database")
+            } else {
+                res.status(404).json('No user with this token')
+            }
+        } catch (error) {
+            res.status(403).json('Not authorized to perform this action')
+        }
+    } catch(err) {
+        res.status(500).json(err)
+    }
+})
+
+
 // update a user
 
 
-
-
-router.get("/", (req, res)=>{
-    res.send("This is user routes")
+//  NOTE : WHILE DEVELOPING FRONT END IF A USER CHANGES EMAIL THEN HE SHOULD RE-LOGIN SHOW THIS NOTE IN GUI AND REDIRECT USER TO LOGIN PAGE
+router.put("/update", async(req, res)=>{
+    try {
+        const authHeader = req.headers.authorization
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(403).json('No token provided')
+        }
+        const token = authHeader.split(' ')[1]
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET)
+            const email = decoded.email
+            const id = decoded.id
+            if(req.body.password) {
+                try {
+                    const salt = await bcrypt.genSalt(10)
+                    req.body.password = await bcrypt.hash(req.body.password, salt)
+                } catch(err) {
+                    console.log(err)
+                    return res.status(500).json(err)
+                }
+            }
+            const userToUpdate = await User.findOneAndUpdate({email: email, _id: id}, req.body, {new : true, runValidators: true})
+            if(!userToUpdate) {
+                res.status(404).json('No user with this token')
+            }
+            res.status(200).json("Update done")
+        } catch (error) {
+            res.status(403).json(error)
+        }
+    } catch(err) {
+        res.status(500).json(err)
+    }
 })
 
 
