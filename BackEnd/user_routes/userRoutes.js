@@ -48,6 +48,7 @@ router.post("/login", async(req, res)=>{
         const token = jwt.sign({id, email}, process.env.JWT_SECRET, {
             expiresIn: "1d",
         })
+        // this token should be stored in the client as it is used for authentication and authorization in the later requests
         res.status(200).json({msg: "Login successful", token})
     } catch(err) {
         res.status(404).json("User not found")
