@@ -4,10 +4,13 @@ const userRouter = require("./user_routes/userRoutes")
 require('dotenv').config();
 const connect = require("./db/connect")
 const bodyParser = require("body-parser");
+const postRouter = require("./user_routes/postRoutes")
+
 
 app.use(bodyParser.json());
 
 app.use("/api/users", userRouter)
+app.use("/api/posts", postRouter)
 
 
 

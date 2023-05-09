@@ -69,7 +69,7 @@ router.get("/:id", async(req, res)=>{
             const id = decoded.id
             userSearching = await User.findById(id)
             if(userSearching) {
-                userFromDB = await User.find({_id:req.params.id})
+                userFromDB = await User.find({_id:req.params.id}).select('username following followers')
                 if(userFromDB.length == 1) {
                     res.status(200).json(userFromDB)
                 } else {
@@ -151,5 +151,69 @@ router.put("/update", async(req, res)=>{
     }
 })
 
+
+// follow a user
+router.put("/:id/follow", async(req, res)=>{
+    try {
+        const authHeader = req.headers.authorization
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(403).json('No token provided')
+        }
+        const token = authHeader.split(' ')[1]
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET)
+            const id = decoded.id
+            userSearching = await User.findById(id)
+            if(userSearching) {
+                const user = await User.findOne({_id: req.params.id})
+                if(!user.followers.includes(userSearching._id)) {
+                    await user.updateOne({$push: { followers: userSearching._id}})
+                    await userSearching.updateOne({$push: { following: req.params.id}})
+                    res.status(200).json("Following now")
+                } else {
+                    res.status(401).json("You already follow this user")
+                }
+            } else {
+                res.status(404).json("Invalid token")
+            }
+        } catch (error) {
+            res.status(403).json('Not authorized to access this route')
+        }
+    } catch(err) {
+        res.status(500).json(err)
+    }
+})
+
+// unfollow a user
+router.put("/:id/unfollow", async(req, res)=>{
+    try {
+        const authHeader = req.headers.authorization
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(403).json('No token provided')
+        }
+        const token = authHeader.split(' ')[1]
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET)
+            const id = decoded.id
+            userSearching = await User.findById(id)
+            if(userSearching) {
+                const user = await User.findOne({_id: req.params.id})
+                if(user.followers.includes(userSearching._id)) {
+                    await user.updateOne({$pull: { followers: userSearching._id}})
+                    await userSearching.updateOne({$pull: { following: req.params.id}})
+                    res.status(200).json("Unfollowed")
+                } else {
+                    res.status(401).json("You dont follow this user")
+                }
+            } else {
+                res.status(404).json("Invalid token")
+            }
+        } catch (error) {
+            res.status(403).json('Not authorized to access this route')
+        }
+    } catch(err) {
+        res.status(500).json(err)
+    }
+})
 
 module.exports = router
