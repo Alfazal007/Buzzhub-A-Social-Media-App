@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 // Create multer upload middleware
 const upload = multer({ storage: storage });
 
-
+// create a new post
 router.post("/", upload.single('img'), async (req, res) => {
     try {
         const authHeader = req.headers.authorization
@@ -94,4 +94,9 @@ router.get("/:id", async(req, res)=>{
     }
 })
 
+
+
+// get posts in feed (yours + followings)
+// delete a post
+// update a post
 module.exports = router
