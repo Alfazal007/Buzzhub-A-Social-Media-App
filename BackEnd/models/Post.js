@@ -7,7 +7,7 @@ const PostSchema = new mongoose.Schema(
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-            required: true
+            required: true,
         },
         description: {
             type: String,
@@ -15,8 +15,8 @@ const PostSchema = new mongoose.Schema(
             max: 500
         },
         img: {
-            data: Buffer,
-            contentType: String
+            type: Buffer,
+            default: null
         },
         likes: {
             type: Array,

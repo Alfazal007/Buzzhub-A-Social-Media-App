@@ -4,7 +4,7 @@ const UserSchema = new mongoose.Schema(
     {
         username: {
             type: String,
-            required: [true, 'product name must be provided'],
+            required: true,
             unique: true,
             max: 20
         },

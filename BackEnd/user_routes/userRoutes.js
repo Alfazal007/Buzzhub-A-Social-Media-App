@@ -46,7 +46,7 @@ router.post("/login", async(req, res)=>{
         }
         const id = user._id
         const token = jwt.sign({id, email}, process.env.JWT_SECRET, {
-            expiresIn: "1d",
+            expiresIn: "30d",
         })
         // this token should be stored in the client as it is used for authentication and authorization in the later requests
         res.status(200).json({msg: "Login successful", token})
@@ -67,6 +67,9 @@ router.get("/:id", async(req, res)=>{
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
             const id = decoded.id
+            if (decoded.exp <= Date.now() / 1000) {
+                return res.status(401).json({ error: "Token has expired" });
+            }
             userSearching = await User.findById(id)
             if(userSearching) {
                 userFromDB = await User.find({_id:req.params.id}).select('username following followers')
@@ -99,6 +102,9 @@ router.delete("/delete", async(req, res)=>{
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
             const email = decoded.email
             const id = decoded.id
+            if (decoded.exp <= Date.now() / 1000) {
+                return res.status(401).json({ error: "Token has expired" });
+            }
             const userToDelete = await User.findOneAndDelete({email: email, _id: id})
             if(userToDelete) {
                 res.status(200).json("User has been deleted from database")
@@ -129,6 +135,9 @@ router.put("/update", async(req, res)=>{
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
             const email = decoded.email
             const id = decoded.id
+            if (decoded.exp <= Date.now() / 1000) {
+                return res.status(401).json({ error: "Token has expired" });
+            }
             if(req.body.password) {
                 try {
                     const salt = await bcrypt.genSalt(10)
@@ -140,7 +149,7 @@ router.put("/update", async(req, res)=>{
             }
             const userToUpdate = await User.findOneAndUpdate({email: email, _id: id}, req.body, {new : true, runValidators: true})
             if(!userToUpdate) {
-                res.status(404).json('No user with this token')
+                return res.status(404).json('No user with this token')
             }
             res.status(200).json("Update done")
         } catch (error) {
@@ -163,9 +172,15 @@ router.put("/:id/follow", async(req, res)=>{
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
             const id = decoded.id
+            if (decoded.exp <= Date.now() / 1000) {
+                return res.status(401).json({ error: "Token has expired" });
+            }
             userSearching = await User.findById(id)
             if(userSearching) {
                 const user = await User.findOne({_id: req.params.id})
+                if(user._id.equals(userSearching._id)) {
+                    return res.status(401).json("You cannot follow yourself")
+                }
                 if(!user.followers.includes(userSearching._id)) {
                     await user.updateOne({$push: { followers: userSearching._id}})
                     await userSearching.updateOne({$push: { following: req.params.id}})
@@ -195,6 +210,9 @@ router.put("/:id/unfollow", async(req, res)=>{
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
             const id = decoded.id
+            if (decoded.exp <= Date.now() / 1000) {
+                return res.status(401).json({ error: "Token has expired" });
+            }
             userSearching = await User.findById(id)
             if(userSearching) {
                 const user = await User.findOne({_id: req.params.id})
