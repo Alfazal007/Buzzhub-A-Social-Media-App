@@ -37,6 +37,9 @@ router.post("/", upload.single('img'), async (req, res) => {
             if (!userMakingPosts) {
                 return res.status(404).json("Invalid token")
             }
+            // await Post.collection.dropIndex('username_1');
+            // await Post.collection.dropIndex('email_1');
+            // console.log('Index dropped successfully');
             const { description } = req.body;
             let img;
             if (req.file) {
@@ -72,6 +75,7 @@ router.get("/:id", async(req, res)=>{
             userSearching = await User.findById(id)
             if(userSearching) {
                 postSearching = await Post.findById(req.params.id)
+
                 if(postSearching) {
                     const { userId, description, img, likes } = postSearching
                     const imgBase64 = img ? img.toString('base64') : null
