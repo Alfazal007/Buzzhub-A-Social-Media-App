@@ -76,7 +76,6 @@ router.get("/:id", async(req, res)=>{
                     const { userId, description, img, likes } = postSearching
                     const imgBase64 = img ? img.toString('base64') : null
                     return res.status(200).json({ userId, description, img: imgBase64, likes })
-                    res.status(200).send(postFound)
                 } else {
                     res.status(404).json('Post not found')
                 }
