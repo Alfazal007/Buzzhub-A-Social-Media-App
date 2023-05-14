@@ -3,7 +3,7 @@ const router = express.Router()
 const User = require("../models/User")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-
+const Post = require("../models/Post")
 
 class CustomError extends Error {
     constructor(message, statusCode) {
@@ -17,12 +17,16 @@ class CustomError extends Error {
 router.post("/register", async(req, res)=>{
     try {
         const salt = await bcrypt.genSalt(10)
+        if(req.body.password.length < 8) {
+            return res.status(401).json("Password length should be atleast 8 characters long")
+        }
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
         const newUser = new User({
             username: req.body.username,
             email: req.body.email,
             password: hashedPassword
         })
+        await newUser.validate()
         const user = await newUser.save()
         res.status(201).json(user)
     } catch(err) {
@@ -56,7 +60,7 @@ router.post("/login", async(req, res)=>{
 })
 
 
-// get a user
+// get a user through id
 router.get("/:id", async(req, res)=>{
     try {
         const authHeader = req.headers.authorization
@@ -73,6 +77,38 @@ router.get("/:id", async(req, res)=>{
             userSearching = await User.findById(id)
             if(userSearching) {
                 userFromDB = await User.find({_id:req.params.id}).select('username following followers')
+                if(userFromDB.length == 1) {
+                    res.status(200).json(userFromDB)
+                } else {
+                    res.status(404).json("User not found")
+                }
+            } else {
+                res.status(404).json("Invalid token")
+            }
+        } catch (error) {
+            res.status(403).json('Not authorized to access this route')
+        }
+    } catch(err) {
+        res.status(500).json(err)
+    }
+})
+// get a user using username
+router.get("/username/:username", async(req, res)=>{
+    try {
+        const authHeader = req.headers.authorization
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(403).json('No token provided')
+        }
+        const token = authHeader.split(' ')[1]
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET)
+            const id = decoded.id
+            if (decoded.exp <= Date.now() / 1000) {
+                return res.status(401).json({ error: "Token has expired" });
+            }
+            userSearching = await User.findById(id)
+            if(userSearching) {
+                userFromDB = await User.find({username:req.params.username}).select('username following followers')
                 if(userFromDB.length == 1) {
                     res.status(200).json(userFromDB)
                 } else {
@@ -105,6 +141,10 @@ router.delete("/delete", async(req, res)=>{
             if (decoded.exp <= Date.now() / 1000) {
                 return res.status(401).json({ error: "Token has expired" });
             }
+            const postsOfTheUser = await Post.deleteMany({userId:id})
+            // if(postsOfTheUser.length > 1) {
+            //     await postsOfTheUser.delete()
+            // }
             const userToDelete = await User.findOneAndDelete({email: email, _id: id})
             if(userToDelete) {
                 res.status(200).json("User has been deleted from database")
