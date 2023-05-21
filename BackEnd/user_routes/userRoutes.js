@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const {
-  register,
-  login,
   getUserFromId,
   getUserFromUsername,
   deleteUser,
@@ -10,12 +8,6 @@ const {
   followUser,
   unfollowUser,
 } = require('../controllers/userController');
-
-// create a new user
-router.post('/register', register);
-
-// login an existing user
-router.post('/login', login);
 
 // get a user through id
 router.get('/:id', getUserFromId);
@@ -26,7 +18,6 @@ router.get('/username/:username', getUserFromUsername);
 router.delete('/delete', deleteUser);
 
 // update a user
-
 //  NOTE : WHILE DEVELOPING FRONT END IF A USER CHANGES EMAIL THEN HE SHOULD RE-LOGIN SHOW THIS NOTE IN GUI AND REDIRECT USER TO LOGIN PAGE
 router.put('/update', updateUser);
 
