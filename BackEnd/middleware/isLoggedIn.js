@@ -16,7 +16,7 @@ module.exports = async function isLoggedIn(req, res, next) {
       return res.status(401).json({ error: 'Token has expired' });
     }
 
-    userSearching = await User.findById(req.id);
+    req.userSearching = await User.findById(req.id);
     if (!userSearching) {
       return res.status(404).json({ message: 'User not found!' });
     }

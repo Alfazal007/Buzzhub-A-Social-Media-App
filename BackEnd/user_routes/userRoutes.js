@@ -23,9 +23,9 @@ router.delete('/delete', isLoggedIn, deleteUser);
 router.put('/update', isLoggedIn, updateUser);
 
 // follow a user
-router.put('/:id/follow', followUser);
+router.put('/:id/follow', isLoggedIn, followUser);
 
 // unfollow a user
-router.put('/:id/unfollow', unfollowUser);
+router.put('/:id/unfollow', isLoggedIn, unfollowUser);
 
 module.exports = router;
