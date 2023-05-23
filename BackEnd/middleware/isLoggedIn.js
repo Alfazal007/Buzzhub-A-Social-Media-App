@@ -15,11 +15,12 @@ module.exports = async function isLoggedIn(req, res, next) {
     if (decoded.exp <= Date.now() / 1000) {
       return res.status(401).json({ error: 'Token has expired' });
     }
-
-    req.userSearching = await User.findById(req.id);
+    
+    const userSearching = await User.findById(req.id);
     if (!userSearching) {
       return res.status(404).json({ message: 'User not found! maybe got deleted better relogin' });
     }
+    req.userSearching = userSearching
     next();
   } catch (error) {
     res.json(error);

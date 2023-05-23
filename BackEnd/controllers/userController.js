@@ -13,8 +13,9 @@ class CustomError extends Error {
 
 // middleware done
 const getUserFromId = async (req, res) => {
+  console.log("Hi")
   try {
-    userFromDB = await User.find({ _id: req.params.id }).select(
+    const userFromDB = await User.find({ _id: req.params.id }).select(
       'username following followers'
     );
     res.status(200).json(userFromDB);
