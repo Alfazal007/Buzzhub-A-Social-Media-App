@@ -18,7 +18,7 @@ module.exports = async function isLoggedIn(req, res, next) {
 
     req.userSearching = await User.findById(req.id);
     if (!userSearching) {
-      return res.status(404).json({ message: 'User not found!' });
+      return res.status(404).json({ message: 'User not found! maybe got deleted better relogin' });
     }
     next();
   } catch (error) {
