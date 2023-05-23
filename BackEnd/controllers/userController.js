@@ -59,21 +59,48 @@ const deleteUser = async (req, res) => {
 // middleware done
 const updateUser = async (req, res) => {
   try {
-    if (req.body.password) {
-      try {
-        const salt = await bcrypt.genSalt(10);
-        req.body.password = await bcrypt.hash(req.body.password, salt);
-      } catch (err) {
-        console.log(err);
-        return res.status(500).json(err);
+    // this is to change email and password(not forgot password)
+    if(req.body.old_password) {
+      const isValidPassword = await bcrypt.compare(req.body.old_password, userSearching.password);
+      console.log(isValidPassword)
+      if(isValidPassword) {
+        if(req.body.email) {
+          const userToUpdate = await User.findOneAndUpdate(
+            { email: req.email, _id: req.id },
+            {email:req.body.email},
+            { new: true, runValidators: true }
+          );
+          console.log(userToUpdate)
+          if(userToUpdate === null) {
+            res.status(403).json("Not found the user, relogin")
+          }
+          else {
+            res.status(200).json('Update done');
+          }
+        } else if(req.body.new_password){
+          const salt = await bcrypt.genSalt(10);
+          const new_password = await bcrypt.hash(req.body.new_password, salt);
+          const userToUpdate = await User.findOneAndUpdate(
+            { email: req.email, _id: req.id },
+            {password : new_password},
+            { new: true, runValidators: true }
+          );
+          if(userToUpdate === null) {
+            res.status(403).json("Not found the user, relogin")
+          }
+          else {
+            res.status(200).json('Update done');
+          }
+        } else {
+          res.status(403).json("wrong password or bad request")
+        }
+      } else {
+        res.status(403).json("wrong password")
       }
+    } else {
+      // here forgot password
+      res.status(201).send("Send old password")
     }
-    const userToUpdate = await User.findOneAndUpdate(
-      { email: req.email, _id: req.id },
-      req.body,
-      { new: true, runValidators: true }
-    );
-    res.status(200).json('Update done');
   } catch (err) {
     res.status(500).json(err);
   }
