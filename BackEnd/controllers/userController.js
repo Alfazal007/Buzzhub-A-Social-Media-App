@@ -107,6 +107,9 @@ const updateUser = async (req, res) => {
   }
 };
 
+
+
+
 // middleware done
 const followUser = async (req, res) => {
   try {
