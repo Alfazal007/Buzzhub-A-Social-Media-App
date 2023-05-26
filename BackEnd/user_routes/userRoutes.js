@@ -7,6 +7,7 @@ const {
   updateUser,
   followUser,
   unfollowUser,
+  forgotpassword,
 } = require('../controllers/userController');
 const isLoggedIn = require('../middleware/isLoggedIn');
 
@@ -21,6 +22,7 @@ router.delete('/delete', isLoggedIn, deleteUser);
 // update a user
 //  NOTE : WHILE DEVELOPING FRONT END IF A USER CHANGES EMAIL THEN HE SHOULD RE-LOGIN SHOW THIS NOTE IN GUI AND REDIRECT USER TO LOGIN PAGE
 router.put('/update', isLoggedIn, updateUser);
+router.put('/forgotpassword', forgotpassword);
 
 // follow a user
 router.put('/:id/follow', isLoggedIn, followUser);
