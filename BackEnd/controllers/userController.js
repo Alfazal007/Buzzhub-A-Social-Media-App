@@ -61,32 +61,32 @@ const deleteUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     // this is to change email and password(not forgot password)
-    if(req.body.old_password) {
+    if (req.body.old_password) {
       const isValidPassword = await bcrypt.compare(req.body.old_password, userSearching.password);
       console.log(isValidPassword)
-      if(isValidPassword) {
-        if(req.body.email) {
+      if (isValidPassword) {
+        if (req.body.email) {
           const userToUpdate = await User.findOneAndUpdate(
             { email: req.email, _id: req.id },
-            {email:req.body.email},
+            { email: req.body.email },
             { new: true, runValidators: true }
           );
           console.log(userToUpdate)
-          if(userToUpdate === null) {
+          if (userToUpdate === null) {
             res.status(403).json("Not found the user, relogin")
           }
           else {
             res.status(200).json('Update done');
           }
-        } else if(req.body.new_password){
+        } else if (req.body.new_password) {
           const salt = await bcrypt.genSalt(10);
           const new_password = await bcrypt.hash(req.body.new_password, salt);
           const userToUpdate = await User.findOneAndUpdate(
             { email: req.email, _id: req.id },
-            {password : new_password},
+            { password: new_password },
             { new: true, runValidators: true }
           );
-          if(userToUpdate === null) {
+          if (userToUpdate === null) {
             res.status(403).json("Not found the user, relogin")
           }
           else {
@@ -106,6 +106,9 @@ const updateUser = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+
+
 
 // middleware done
 const followUser = async (req, res) => {
@@ -146,6 +149,38 @@ const unfollowUser = async (req, res) => {
   }
 };
 
+
+const forgotpassword = async (req, res) => {
+  try {
+    if(req.body.email) {
+      if(req.body.new_password) {
+        // find the user with the email
+        const userWithEmail = await User.findOne({email : req.body.email})
+        if(userWithEmail != null) {
+          const salt = await bcrypt.genSalt(10)
+          const hashedPassword = await bcrypt.hash(req.body.new_password, salt);
+          try {
+            const afterUpdate = await User.findOneAndUpdate({email : req.body.email} , {password : hashedPassword}, {new:true, runValidators : true})
+            return res.status(200).json("New password has been set")
+          } catch(err) {
+            return res.status(401).json(err)
+          }
+        } else {
+          return res.status(404).json("User with this email not found")
+        }
+      } else {
+        res.status(404).json("You need to provide new valid password")
+      }
+    } else {
+      res.status(404).json("You need to provide user email id")
+    }
+  } catch(err) {
+    res.status(500).json(err)
+  }
+};
+
+
+
 module.exports = {
   getUserFromId,
   getUserFromUsername,
@@ -153,4 +188,5 @@ module.exports = {
   updateUser,
   followUser,
   unfollowUser,
+  forgotpassword
 };
