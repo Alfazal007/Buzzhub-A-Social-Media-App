@@ -13,6 +13,12 @@
         android:theme="@style/Theme.Buzzhub"
         tools:targetApi="31">
         <activity
+            android:name=".loginpageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".signupActivity"
+            android:exported="false" />
+        <activity
             android:name=".landingActivity"
             android:exported="false" />
         <activity
