@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const Conversation = require('../models/Conversation');
 const isLoggedIn = require('../middleware/isLoggedIn');
 const {
   addConversation,
@@ -8,5 +7,7 @@ const {
 
 router
   .route('/')
-  .get(isLoggedIn, addConversation)
-  .post(isLoggedIn, getConversation);
+  .get(isLoggedIn, getConversation)
+  .post(isLoggedIn, addConversation);
+
+module.exports = router;

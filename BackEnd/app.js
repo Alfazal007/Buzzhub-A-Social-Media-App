@@ -6,12 +6,14 @@ const connect = require('./db/connect');
 const bodyParser = require('body-parser');
 const postRouter = require('./user_routes/postRoutes');
 const authRoutes = require('./user_routes/authRoutes');
+const conversationRoutes = require('./user_routes/conversationRoute');
 
 app.use(bodyParser.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRouter);
 app.use('/api/posts', postRouter);
+app.use('/api/conversation', conversationRoutes);
 
 const port = process.env.PORT || 8800;
 
