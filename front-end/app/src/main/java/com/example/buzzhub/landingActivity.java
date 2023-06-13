@@ -30,7 +30,7 @@ public class landingActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent log = new Intent(landingActivity.this, loginpageActivity.class);
+                Intent log = new Intent(landingActivity.this, homepageActivity.class);
                 startActivity(log);
                 finish();
             }
