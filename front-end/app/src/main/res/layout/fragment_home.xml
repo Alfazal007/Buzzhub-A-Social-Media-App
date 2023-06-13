@@ -47,15 +47,13 @@
                 android:id="@+id/notification"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_marginTop="17dp"
+                android:layout_marginRight="10dp"
                 android:backgroundTint="@color/dark"
                 android:contentDescription="Notofication"
                 android:src="@drawable/notificationclose"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.927"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.193" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <HorizontalScrollView
                 android:id="@+id/hori"
@@ -109,6 +107,19 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/hori" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/postinhome"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
