@@ -7,6 +7,11 @@ import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.buzzhub.Fragments.ChatFragment;
+import com.example.buzzhub.Fragments.HomeFragment;
+import com.example.buzzhub.Fragments.PostFragment;
+import com.example.buzzhub.Fragments.ProfileFragment;
+import com.example.buzzhub.Fragments.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class homepageActivity extends AppCompatActivity {

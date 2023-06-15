@@ -1,4 +1,4 @@
-package com.example.buzzhub;
+package com.example.buzzhub.Fragments;
 
 import android.os.Bundle;
 
@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.example.buzzhub.Adapter.HomepostAdapter;
 import com.example.buzzhub.Adapter.StoryAdapter;
+import com.example.buzzhub.R;
 import com.example.buzzhub.model.HomepostModel;
 import com.example.buzzhub.model.StoryModel;
 
