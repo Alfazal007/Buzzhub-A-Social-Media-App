@@ -30,11 +30,11 @@ createPost = async (req, res) => {
       if (req.file) {
         img = fs.readFileSync(req.file.path); // read the image file as a buffer
         fs.unlinkSync(req.file.path); // delete the temporary file
+        const newPost = new Post({ userId, description, img });
+        await newPost.validate();
+        const savedPost = await newPost.save();
+        res.status(201).json(savedPost);
       }
-      const newPost = new Post({ userId, description, img });
-      await newPost.validate();
-      const savedPost = await newPost.save();
-      res.status(201).json(savedPost);
     } catch (error) {
       res.status(403).json(error.message);
     }

@@ -2,6 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Post = require('../models/Post');
+const Story = require('../models/Story');
 const nodemailer = require("nodemailer");
 const path = require("path");
 class CustomError extends Error {
@@ -45,6 +46,7 @@ const getUserFromUsername = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const postsOfTheUser = await Post.deleteMany({ userId: req.id });
+    const storyOfTheUser = await Story.deleteMany({ userId: req.id });
     // if(postsOfTheUser.length > 1) {
     //     await postsOfTheUser.delete()
     // }

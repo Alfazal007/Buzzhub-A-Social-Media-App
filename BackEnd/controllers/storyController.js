@@ -40,7 +40,17 @@ createStory = async (req, res) => {
     }
 };
 
+getStory = async (req, res) => {
+    try {
+
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
 
 module.exports = {
     createStory
 };
+
+// get stories
+// delete a story
