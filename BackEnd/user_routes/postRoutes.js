@@ -9,6 +9,7 @@ const {
   unlikePost,
 } = require('../controllers/postController');
 const multer = require('multer');
+const isLoggedIn = require('../middleware/isLoggedIn');
 
 // Set up multer storage engine
 const storage = multer.diskStorage({
@@ -24,24 +25,24 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // create a new post
-router.post('/', upload.single('img'), createPost);
+router.post('/', upload.single('img'), isLoggedIn, createPost);
 
 // get a post ---- specific
-router.get('/:id', getPost);
+router.get('/:id', isLoggedIn, getPost);
 
 // get posts in feed (yours + followings)
-router.get('/feeds/all', getFeed);
+router.get('/feeds/all', isLoggedIn, getFeed);
 
 // delete a post
-router.delete('/:id', deletePost);
+router.delete('/:id', isLoggedIn, deletePost);
 
 // update a post
-router.put('/:id', upload.single('img'), updatePost);
+router.put('/:id', upload.single('img'), isLoggedIn, updatePost);
 
 // endpoint to like a post
-router.put('/:id/like', likePost);
+router.put('/:id/like', isLoggedIn, likePost);
 
 // endpoints to dislike a liked post
-router.put('/:id/dislike', unlikePost);
+router.put('/:id/dislike', isLoggedIn, unlikePost);
 
 module.exports = router;
