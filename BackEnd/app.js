@@ -6,6 +6,8 @@ const connect = require('./db/connect');
 const bodyParser = require('body-parser');
 const postRouter = require('./user_routes/postRoutes');
 const authRoutes = require('./user_routes/authRoutes');
+const conversationRoutes = require('./user_routes/conversationRoute');
+const messageRoutes = require('./user_routes/messageRoutes');
 const storyRoutes = require("./user_routes/storyRoutes");
 const Story = require("./models/Story");
 const nodemailer = require('nodemailer');
@@ -18,7 +20,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRouter);
 app.use('/api/posts', postRouter);
-app.use('/api/story', storyRoutes);
 
 const port = process.env.PORT || 8800;
 
