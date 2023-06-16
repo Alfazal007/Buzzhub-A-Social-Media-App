@@ -66,7 +66,7 @@ const getPost = async (req, res) => {
 };
 
 // middleware done
-deletePost = async (req, res) => {
+const deletePost = async (req, res) => {
   try {
     const postToDelete = await Post.findById(req.params.id).select(
       'userId description'
@@ -87,7 +87,7 @@ deletePost = async (req, res) => {
 };
 
 // middleware done
-updatePost = async (req, res) => {
+const updatePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (req.userSearching._id.equals(post.userId)) {
@@ -118,7 +118,7 @@ updatePost = async (req, res) => {
 };
 
 // middleware done
-likePost = async (req, res) => {
+const likePost = async (req, res) => {
   try {
     const userIdLikingThePost = req.userSearching._id;
     const post = await Post.findById(req.params.id);
@@ -143,7 +143,7 @@ likePost = async (req, res) => {
 };
 
 // middleware done
-unlikePost = async (req, res) => {
+const unlikePost = async (req, res) => {
   try {
     const userIdDislikingThePost = req.userSearching._id;
     const post = await Post.findById(req.params.id);

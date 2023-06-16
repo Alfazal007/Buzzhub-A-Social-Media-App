@@ -20,10 +20,12 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRouter);
 app.use('/api/posts', postRouter);
+app.use('/api/conversation', conversationRoutes);
+app.use('/api/message', messageRoutes);
+app.use('/api/story/', storyRoutes);
+
 
 const port = process.env.PORT || 8800;
-
-
 
 
 
@@ -37,18 +39,5 @@ const start = async () => {
     console.log(error);
   }
 };
-
-// const deleteExpiredStories = async () => {
-//   const stories = await Story.find({
-//     createdAt: { $lt: new Date() },
-//   });
-
-//   for (const story of stories) {
-//     await story.deleteOne();
-//   }
-// };
-
-// setInterval(deleteExpiredStories, 10000); // Delete expired documents every 10 seconds
-
 
 start();

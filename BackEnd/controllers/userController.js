@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const Post = require('../models/Post');
 const nodemailer = require("nodemailer");
 const path = require("path");
+const Story = require("../models/Story");
 class CustomError extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -45,16 +46,44 @@ const getUserFromUsername = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const postsOfTheUser = await Post.deleteMany({ userId: req.id });
-    // if(postsOfTheUser.length > 1) {
-    //     await postsOfTheUser.delete()
-    // }
-    const userToDelete = await User.findOneAndDelete({
-      email: req.email,
-      _id: req.id,
-    });
-    res.status(200).json('User has been deleted from database');
+    const storyOfTheUser = await Story.deleteMany({ userId: req.id });
+    const deletedUser = await User.findById(req.id);
+    console.log(deletedUser);
+    console.log(deletedUser.following);
+    const following = deletedUser.following;
+    // await Promise.all(deletedUser.following.map(async()))
+    await Promise.all(following.map(async (userToBeUpdated) => {
+      const user = await User.findOne({ _id: userToBeUpdated });
+      const doesInclude = user.followers;
+      console.log(doesInclude);
+      const index = doesInclude.indexOf(req.id);
+      if (index > -1) {
+        doesInclude.splice(index, 1);
+      }
+      console.log(doesInclude);
+      user.followers = doesInclude;
+      user.save();
+    }));
+    const followers = deletedUser.followers;
+    await Promise.all(followers.map(async (userToBeUpdated) => {
+      const user = await User.findOne({ _id: userToBeUpdated });
+      const doesInclude = user.following;
+      console.log(doesInclude);
+      const index = doesInclude.indexOf(req.id);
+      if (index > -1) {
+        doesInclude.splice(index, 1);
+      }
+      console.log(doesInclude);
+      user.following = doesInclude;
+      user.save();
+    }));
+    await User.findByIdAndDelete({ _id: req.id });
+    res.status(200).json("User has been successfully deleted and the database has been updated.");
+
   } catch (err) {
-    res.status(500).json(err);
+    console.log("In catch section of top try block");
+    console.log(err);
+    res.status(500).json("Hi");
   }
 };
 
