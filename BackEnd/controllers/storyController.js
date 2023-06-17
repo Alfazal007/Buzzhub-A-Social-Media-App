@@ -4,7 +4,7 @@ const User = require('../models/User');
 const fs = require('fs');
 
 
-createStory = async (req, res) => {
+const createStory = async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -40,7 +40,13 @@ createStory = async (req, res) => {
     }
 };
 
+const getStory = async (req, res) => {
+    try {
 
+    } catch (err) {
+        res.status(500).json("There was an error getting the posts", err);
+    }
+};
 module.exports = {
     createStory
 };

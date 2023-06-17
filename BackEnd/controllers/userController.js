@@ -5,6 +5,7 @@ const Post = require('../models/Post');
 const nodemailer = require("nodemailer");
 const path = require("path");
 const Story = require("../models/Story");
+const fs = require("fs");
 class CustomError extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -15,12 +16,14 @@ class CustomError extends Error {
 
 // middleware done
 const getUserFromId = async (req, res) => {
-  console.log("Hi");
   try {
     const userFromDB = await User.find({ _id: req.params.id }).select(
       'username following followers'
     );
-    res.status(200).json(userFromDB);
+    if (userFromDB.length == 1) {
+      return res.status(200).json(userFromDB);
+    }
+    return res.status(404).json('User not found');
   } catch (err) {
     res.status(500).json(err);
   }
@@ -29,7 +32,7 @@ const getUserFromId = async (req, res) => {
 // middleware done
 const getUserFromUsername = async (req, res) => {
   try {
-    userFromDB = await User.find({ username: req.params.username }).select(
+    const userFromDB = await User.find({ username: req.params.username }).select(
       'username following followers'
     );
     if (userFromDB.length == 1) {
@@ -88,11 +91,12 @@ const deleteUser = async (req, res) => {
 };
 
 // middleware done
+// this is only for email and password
 const updateUser = async (req, res) => {
   try {
     // this is to change email and password(not forgot password)
     if (req.body.old_password) {
-      const isValidPassword = await bcrypt.compare(req.body.old_password, userSearching.password);
+      const isValidPassword = await bcrypt.compare(req.body.old_password, req.userSearching.password);
       console.log(isValidPassword);
       if (isValidPassword) {
         if (req.body.email) {
@@ -133,7 +137,7 @@ const updateUser = async (req, res) => {
       res.status(201).send("Send old password");
     }
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json(err.message);
   }
 };
 
@@ -276,7 +280,50 @@ const handleFormPage = async (req, res) => {
   }
 };
 
+// update more user information
+const updateNormalInfo = async (req, res) => {
+  try {
+    let changeObject = {};
+    let img;
+    if (req.file) {
+      img = fs.readFileSync(req.file.path); // read the image file as a buffer
+      fs.unlinkSync(req.file.path); // delete the temporary file
+      changeObject.img = img;
+    }
+    if (req.body.username) {
+      changeObject.username = req.body.username;
+    }
+    if (req.body.bio) {
+      changeObject.bio = req.body.bio;
+    }
+    let updatedUser;
+    try {
+      updatedUser = await User.findOneAndUpdate(
+        { _id: req.id },
+        changeObject,
+        { new: true, runValidators: true }
+      );
+    } catch (err) {
+      res.status(401).json(err.message);
+    }
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
 
+const removeBgIMG = async (req, res) => {
+  try {
+    const afterUpdate = await User.findOneAndUpdate(
+      { _id: req.id },
+      { img: null },
+      { new: true, runValidators: true }
+    );
+    return res.status(200).json(afterUpdate);
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
 module.exports = {
   getUserFromId,
   getUserFromUsername,
@@ -286,5 +333,7 @@ module.exports = {
   unfollowUser,
   forgotpassword,
   serveChangePasswordPage,
-  handleFormPage
+  handleFormPage,
+  updateNormalInfo,
+  removeBgIMG,
 };

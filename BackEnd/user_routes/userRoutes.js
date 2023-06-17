@@ -9,9 +9,25 @@ const {
   unfollowUser,
   forgotpassword,
   serveChangePasswordPage,
-  handleFormPage
+  handleFormPage,
+  updateNormalInfo,
+  removeBgIMG,
 } = require('../controllers/userController');
+const multer = require('multer');
 const isLoggedIn = require('../middleware/isLoggedIn');
+
+
+// Set up multer storage engine
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 // get a user through id
 router.get('/:id', isLoggedIn, getUserFromId);
@@ -36,6 +52,7 @@ router.put('/:id/unfollow', isLoggedIn, unfollowUser);
 router.get('/forgot-password/id/:id/token/:token', serveChangePasswordPage);
 router.post('/forgot-password/id/:id/token/:token', handleFormPage);
 
-
+router.put('/update-normal', upload.single('img'), isLoggedIn, updateNormalInfo);
+router.put('/remove-bg-img', isLoggedIn, removeBgIMG);
 
 module.exports = router;
