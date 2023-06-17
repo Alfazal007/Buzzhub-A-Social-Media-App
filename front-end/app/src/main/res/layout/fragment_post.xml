@@ -1,18 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/dark"
+    android:orientation="vertical"
     tools:context=".Fragments.PostFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Post"
-        android:gravity="center"
+        android:fontFamily="@font/poppins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Preview"
         android:textColor="@color/white"
-        android:textSize="60sp" />
+        android:textSize="20sp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="20dp"/>
 
-</FrameLayout>
+    <ImageView
+        android:src="@color/nav"
+        android:id="@+id/post_img"
+        android:scaleType="centerCrop"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        android:layout_marginTop="25dp"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:fontFamily="@font/poppins"
+        android:id="@+id/dialog_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose file"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/blueborder"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="3dp"/>
+
+    <EditText
+        android:id="@+id/post_caption"
+        android:layout_width="320dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:hint="Caption"
+        android:textColorHint="@color/hintcolor"
+        android:inputType="text"
+        android:textColor="@color/white"
+        android:background="@drawable/post_caption_bg"
+        android:paddingLeft="10dp"
+        android:fontFamily="@font/poppins"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:id="@+id/linear_post1">
+
+        <Button
+            android:id="@+id/post_addstory_btn"
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Story"
+            android:textColor="@color/white"
+            android:textSize="18dp"
+            android:backgroundTint="@color/blue"
+            app:cornerRadius ="10dp"/>
+
+        <Button
+            android:id="@+id/add_post_btn"
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Post"
+            android:textColor="@color/white"
+            android:layout_marginLeft="50dp"
+            android:textSize="18dp"
+            android:backgroundTint="@color/blue"
+            app:cornerRadius ="10dp"/>
+    </LinearLayout>
+
+
+</LinearLayout>
