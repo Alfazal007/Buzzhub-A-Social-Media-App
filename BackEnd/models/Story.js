@@ -16,6 +16,15 @@ const StorySchema = new mongoose.Schema({
         default: Date.now,
         expires: '86400',
     },
+    username: {
+        type: String,
+        ref: 'User',
+        required: true
+    },
+    profilePic: {
+        type: Buffer,
+        default: null
+    },
 });
 // StorySchema.index({ createdAt: 1 }, { expireAfterSeconds: 120 }); // Set TTL index on createdAt field with 2 minutes expiration
 
