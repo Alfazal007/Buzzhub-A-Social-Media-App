@@ -13,12 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.buzzhub.MainActivity;
 import com.example.buzzhub.R;
 import com.example.buzzhub.emailchange_Activity;
+import com.example.buzzhub.landingActivity;
 import com.example.buzzhub.profile_password_changeActivity;
 
 public class ProfileFragment extends Fragment {
@@ -83,14 +86,14 @@ public class ProfileFragment extends Fragment {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "logout", Toast.LENGTH_SHORT).show();
+                logoutdialog();
             }
         });
 
         deleteacc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Delete account", Toast.LENGTH_SHORT).show();
+                deletaccdialog();
             }
         });
 
@@ -105,5 +108,67 @@ public class ProfileFragment extends Fragment {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().getAttributes().windowAnimations =R.style.DialogAnimation;
         dialog.getWindow().setGravity(Gravity.BOTTOM);
+    }
+
+    public void logoutdialog(){
+        final Dialog logoutdialog = new Dialog(this.requireContext());
+        logoutdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        logoutdialog.setContentView(R.layout.logout_dialog);
+
+        Button agree = logoutdialog.findViewById(R.id.logout_yes_btn);
+        Button disagree = logoutdialog.findViewById(R.id.logout_no_btn);
+
+        agree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), landingActivity.class);
+                //You should right your logout code here to delete the details in local app database
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
+        disagree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logoutdialog.dismiss();
+            }
+        });
+        logoutdialog.show();
+        logoutdialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        logoutdialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        logoutdialog.getWindow().getAttributes().windowAnimations =R.style.DialogAnimation;
+        logoutdialog.getWindow().setGravity(Gravity.CENTER_HORIZONTAL);
+    }
+
+    public void deletaccdialog(){
+        final Dialog deletedialog = new Dialog(this.requireContext());
+        deletedialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        deletedialog.setContentView(R.layout.delete_account_dialog);
+
+        Button agree = deletedialog.findViewById(R.id.delete_yes_btn);
+        Button disagree = deletedialog.findViewById(R.id.delete_no_btn);
+
+        agree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                //You should right your delete account code here to delete the account in the database and also in local app database
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
+        disagree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deletedialog.dismiss();
+            }
+        });
+        deletedialog.show();
+        deletedialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        deletedialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        deletedialog.getWindow().getAttributes().windowAnimations =R.style.DialogAnimation;
+        deletedialog.getWindow().setGravity(Gravity.CENTER_HORIZONTAL);
     }
 }
