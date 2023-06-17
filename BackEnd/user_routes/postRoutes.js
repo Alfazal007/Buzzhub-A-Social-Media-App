@@ -7,6 +7,7 @@ const {
   updatePost,
   likePost,
   unlikePost,
+  getMyPosts,
 } = require('../controllers/postController');
 const multer = require('multer');
 const isLoggedIn = require('../middleware/isLoggedIn');
@@ -33,6 +34,8 @@ router.get('/:id', isLoggedIn, getPost);
 // get posts in feed (yours + followings)
 router.get('/feeds/all', isLoggedIn, getFeed);
 
+// get all of my posts
+router.get('/myposts/all', isLoggedIn, getMyPosts);
 // delete a post
 router.delete('/:id', isLoggedIn, deletePost);
 

@@ -166,6 +166,20 @@ const unlikePost = async (req, res) => {
   }
 };
 
+const getMyPosts = async (req, res) => {
+  try {
+    const allMyPosts = await Post.find({ userId: req.id });
+    if (allMyPosts) {
+      res.status(200).json(allMyPosts);
+    } else {
+      return res.status(404).json("No posts found");
+    }
+  } catch (err) {
+    console.log("Hi");
+    res.status(500).json(err.message);
+  }
+};
+
 module.exports = {
   createPost,
   getPost,
@@ -174,4 +188,5 @@ module.exports = {
   updatePost,
   likePost,
   unlikePost,
+  getMyPosts,
 };
