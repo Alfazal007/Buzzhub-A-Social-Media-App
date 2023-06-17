@@ -51,11 +51,11 @@ const getPost = async (req, res) => {
   try {
     const postSearching = await Post.findById(req.params.id);
     if (postSearching) {
-      const { userId, description, img, likes } = postSearching;
+      const { userId, description, img, likes, username } = postSearching;
       const imgBase64 = img ? img.toString('base64') : null;
       return res
         .status(200)
-        .json({ userId, description, img: imgBase64, likes });
+        .json({ userId, description, img: imgBase64, likes, username });
     } else {
       res.status(404).json('Post not found');
     }
@@ -89,6 +89,9 @@ const deletePost = async (req, res) => {
 const updatePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
+    if (post == null) {
+      return res.status(404).json("Post not found");
+    }
     if (req.userSearching._id.equals(post.userId)) {
       let changeObject = {};
       let img;
@@ -112,7 +115,7 @@ const updatePost = async (req, res) => {
         .json('Login again with valid credentials to edit post');
     }
   } catch (err) {
-    return res.status(401).json(err);
+    return res.status(401).json(err.message);
   }
 };
 
@@ -179,6 +182,7 @@ const getMyPosts = async (req, res) => {
     res.status(500).json(err.message);
   }
 };
+
 
 module.exports = {
   createPost,

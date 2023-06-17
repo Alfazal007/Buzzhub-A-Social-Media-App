@@ -35,10 +35,17 @@ const getUserFromUsername = async (req, res) => {
     const userFromDB = await User.find({ username: req.params.username }).select(
       'username following followers'
     );
+    const posts = await Post.find({ username: req.params.username });
     if (userFromDB.length == 1) {
-      res.status(200).json(userFromDB);
+      const userObject = {
+        username: userFromDB[0].username,
+        following: userFromDB[0].following,
+        followers: userFromDB[0].followers,
+        posts: posts
+      };
+      res.status(200).json(userObject);
     } else {
-      res.status(404).json('User not found');
+      res.status(401).json("User not found");
     }
   } catch (err) {
     res.status(500).json(err);
