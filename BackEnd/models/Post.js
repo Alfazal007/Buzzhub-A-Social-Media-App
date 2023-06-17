@@ -1,5 +1,5 @@
-const mongoose = require("mongoose")
-const User = require("./User")
+const mongoose = require("mongoose");
+const User = require("./User");
 
 
 const PostSchema = new mongoose.Schema(
@@ -22,8 +22,13 @@ const PostSchema = new mongoose.Schema(
             type: Array,
             default: []
         },
+        username: {
+            type: String,
+            ref: 'User',
+            required: true
+        },
     }, { timestamps: true }
-)
+);
 
 
-module.exports = mongoose.model("Post", PostSchema)
+module.exports = mongoose.model("Post", PostSchema);
