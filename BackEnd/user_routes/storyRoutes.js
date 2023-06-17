@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const multer = require('multer');
-const { createStory, getAllStories, getSpecificStory } = require("../controllers/storyController");
+const { createStory, getAllStories, getSpecificStory, deleteSpecificStory } = require("../controllers/storyController");
 const isLoggedIn = require('../middleware/isLoggedIn');
 
 // Set up multer storage engine
@@ -22,5 +22,6 @@ router.post('/newStory', upload.single('img'), isLoggedIn, createStory);
 router.get('/getStories', isLoggedIn, getAllStories);
 
 router.get('/get-single-story/:id', isLoggedIn, getSpecificStory);
+router.delete('/delete/:id', isLoggedIn, deleteSpecificStory);
 
 module.exports = router;

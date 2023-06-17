@@ -51,8 +51,26 @@ const getSpecificStory = async (req, res) => {
         res.status(500).json(err.message);
     }
 };
+
+const deleteSpecificStory = async (req, res) => {
+    try {
+        const storyToDelete = await Story.findOne({ _id: req.params.id }).select("_id userId username");
+        if (storyToDelete == null) {
+            return res.status(404).json("Story not found");
+        }
+        if (req.userSearching._id.equals(storyToDelete.userId)) {
+            await Story.findOneAndDelete({ _id: req.params.id });
+            res.status(200).json("The story has been successfully deleted");
+        } else {
+            res.status(401).json("Delete your own stories");
+        }
+    } catch (err) {
+        res.status(500).json(err.message);
+    }
+};
 module.exports = {
     createStory,
     getAllStories,
     getSpecificStory,
+    deleteSpecificStory,
 };
