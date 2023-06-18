@@ -10,6 +10,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.buzzhub.apiInterfaces.AuthInterface;
+import com.example.buzzhub.model.RegisterUser;
+
+import org.w3c.dom.Text;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class signupActivity extends AppCompatActivity {
 
@@ -55,13 +67,39 @@ public class signupActivity extends AppCompatActivity {
         sign_up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.show();
-                String username = name.getText().toString();
-                String useremail = email.getText().toString();
-                String userpass = password.getText().toString();
+//                progressDialog.show();
+
+                RegisterUser user = new RegisterUser(name.getText().toString(), email.getText().toString(), password.getText().toString());
 
                 //Login Function Should be Written
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://192.168.1.15:8800/api/auth/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
 
+                AuthInterface authInterface = retrofit.create(AuthInterface.class);
+
+                Call<RegisterUser> call = authInterface.createUser(user);
+                call.enqueue(new Callback<RegisterUser>() {
+                    @Override
+                    public void onResponse(Call<RegisterUser> call, Response<RegisterUser> response) {
+                        if(!response.isSuccessful())
+                        {
+                            Toast.makeText(signupActivity.this, "Error " + response.code(), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        Intent success = new Intent(signupActivity.this, loginpageActivity.class);
+                        startActivity(success);
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<RegisterUser> call, Throwable t) {
+                        Toast.makeText(signupActivity.this, "Error " + t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
             }
         });
     }
