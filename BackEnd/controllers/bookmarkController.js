@@ -56,7 +56,6 @@ const removeBookmark = async (req, res) => {
 const getBookmark = async (req, res) => {
     try {
         const userBookmarks = await Bookmark.findOne({ userId: req.id });
-        console.log(userBookmarks);
         if (userBookmarks == null || userBookmarks.postId.length < 1) {
             return res.status(200).json("No saved posts in bookmark list");
         }

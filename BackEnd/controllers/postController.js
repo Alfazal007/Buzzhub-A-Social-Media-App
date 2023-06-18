@@ -2,7 +2,7 @@ const Post = require('../models/Post');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const fs = require('fs');
-
+const Bookmark = require('../models/Bookmark');
 // Set up multer storage engine
 
 // middleware done
@@ -73,6 +73,24 @@ const deletePost = async (req, res) => {
     if (postToDelete) {
       if (req.userSearching._id.equals(postToDelete.userId)) {
         await Post.findOneAndDelete({ _id: req.params.id });
+        // remove the id of this deleted post from bookmark list
+        console.log("Hi");
+        // const allBookmarkWithThisPost = await Bookmark.find({ postId: { $elemMatch: { $eq: postToSearch } } });
+        let allBookmarks = await Bookmark.find();
+        await Promise.all(
+          allBookmarks.map((singleBookmark) => {
+            const posts = singleBookmark.postId;
+            if (posts.includes(req.params.id)) {
+              const index = posts.indexOf(req.params.id);
+              if (index > -1) {
+                posts.splice(index, 1);
+              }
+              singleBookmark.postId = posts;
+              singleBookmark.save();
+              return singleBookmark;
+            }
+          })
+        );
         return res.status(200).json('Deleted successfully');
       } else {
         return res.status(403).json('Delete your own posts');
