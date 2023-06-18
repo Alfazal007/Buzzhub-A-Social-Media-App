@@ -1,5 +1,7 @@
 package com.example.buzzhub.model;
 
+
+// hi
 public class HomepostModel {
 
     int profileimg,postimg,bookmarkimg;
