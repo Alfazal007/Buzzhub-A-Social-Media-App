@@ -20,13 +20,14 @@ import android.widget.Toast;
 
 import com.example.buzzhub.MainActivity;
 import com.example.buzzhub.R;
+import com.example.buzzhub.editprofileActivity;
 import com.example.buzzhub.emailchange_Activity;
 import com.example.buzzhub.landingActivity;
 import com.example.buzzhub.profile_password_changeActivity;
 
 public class ProfileFragment extends Fragment {
 
-    ImageView setting;
+    ImageView setting,editprofile;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -38,6 +39,15 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         setting = view.findViewById(R.id.profile_setting);
+        editprofile = view.findViewById(R.id.edit_profile);
+
+        editprofile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), editprofileActivity.class);
+                startActivity(intent);
+            }
+        });
 
         setting.setOnClickListener(new View.OnClickListener() {
             @Override
