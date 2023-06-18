@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="like_post" type="id" />
+    <item name="comment_post" type="id" />
+    <item name="share_post" type="id" />
+</resources>
