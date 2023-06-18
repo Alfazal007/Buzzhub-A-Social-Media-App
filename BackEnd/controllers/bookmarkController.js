@@ -63,7 +63,7 @@ const getBookmark = async (req, res) => {
         const posts = userBookmarks.postId;
         const bookmarksObj = await Promise.all(
             posts.map((post) => {
-                const singlePost = Post.findById(post).select('_id username description');
+                const singlePost = Post.findById(post);
                 return singlePost;
             })
         );
