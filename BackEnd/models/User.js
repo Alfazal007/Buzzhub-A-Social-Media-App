@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema(
     {
@@ -33,9 +33,18 @@ const UserSchema = new mongoose.Schema(
         followers: {
             type: Array,
             default: []
-        }
+        },
+        bio: {
+            type: String,
+            maxlength: 40,
+            default: "",
+        },
+        img: {
+            type: Buffer,
+            default: null,
+        },
     }, { timestamps: true }
-)
+);
 
 
-module.exports = mongoose.model("User", UserSchema)
+module.exports = mongoose.model("User", UserSchema);

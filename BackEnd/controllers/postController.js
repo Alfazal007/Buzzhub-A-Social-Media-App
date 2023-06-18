@@ -2,7 +2,7 @@ const Post = require('../models/Post');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const fs = require('fs');
-
+const Bookmark = require('../models/Bookmark');
 // Set up multer storage engine
 
 // middleware done
@@ -17,9 +17,9 @@ const createPost = async (req, res) => {
       img = fs.readFileSync(req.file.path); // read the image file as a buffer
       fs.unlinkSync(req.file.path); // delete the temporary file
     }
-    console.log('success');
     const userId = req.userSearching._id;
-    const newPost = new Post({ userId, description, img });
+    const username = req.userSearching.username;
+    const newPost = new Post({ userId, description, img, username });
     await newPost.validate();
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
@@ -31,18 +31,17 @@ const createPost = async (req, res) => {
 // middleware done
 const getFeed = async (req, res) => {
   try {
-    postSearching = await Post.findById(req.params.id);
-    if (postSearching) {
-      const { userId, description, img, likes } = postSearching;
-      const imgBase64 = img ? img.toString('base64') : null;
-      return res
-        .status(200)
-        .json({ userId, description, img: imgBase64, likes });
-    } else {
-      res.status(404).json('Post not found');
-    }
+    const userPosts = await Post.find({ userId: req.id }).sort({ createdAt: -1 });
+    const friendPosts = await Promise.all(
+      req.userSearching.following.map((friendId) => {
+        return Post.find({ userId: friendId }).sort({ createdAt: -1 });
+      })
+    );
+    const allPosts = userPosts.concat(...friendPosts).sort((a, b) => b.createdAt - a.createdAt);
+    res.status(200).json(allPosts);
+
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json(err.message);
   }
 };
 
@@ -50,13 +49,13 @@ const getFeed = async (req, res) => {
 // Get post
 const getPost = async (req, res) => {
   try {
-    postSearching = await Post.findById(req.params.id);
+    const postSearching = await Post.findById(req.params.id);
     if (postSearching) {
-      const { userId, description, img, likes } = postSearching;
+      const { userId, description, img, likes, username } = postSearching;
       const imgBase64 = img ? img.toString('base64') : null;
       return res
         .status(200)
-        .json({ userId, description, img: imgBase64, likes });
+        .json({ userId, description, img: imgBase64, likes, username });
     } else {
       res.status(404).json('Post not found');
     }
@@ -66,7 +65,7 @@ const getPost = async (req, res) => {
 };
 
 // middleware done
-deletePost = async (req, res) => {
+const deletePost = async (req, res) => {
   try {
     const postToDelete = await Post.findById(req.params.id).select(
       'userId description'
@@ -74,6 +73,24 @@ deletePost = async (req, res) => {
     if (postToDelete) {
       if (req.userSearching._id.equals(postToDelete.userId)) {
         await Post.findOneAndDelete({ _id: req.params.id });
+        // remove the id of this deleted post from bookmark list
+        console.log("Hi");
+        // const allBookmarkWithThisPost = await Bookmark.find({ postId: { $elemMatch: { $eq: postToSearch } } });
+        let allBookmarks = await Bookmark.find();
+        await Promise.all(
+          allBookmarks.map((singleBookmark) => {
+            const posts = singleBookmark.postId;
+            if (posts.includes(req.params.id)) {
+              const index = posts.indexOf(req.params.id);
+              if (index > -1) {
+                posts.splice(index, 1);
+              }
+              singleBookmark.postId = posts;
+              singleBookmark.save();
+              return singleBookmark;
+            }
+          })
+        );
         return res.status(200).json('Deleted successfully');
       } else {
         return res.status(403).json('Delete your own posts');
@@ -87,9 +104,12 @@ deletePost = async (req, res) => {
 };
 
 // middleware done
-updatePost = async (req, res) => {
+const updatePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
+    if (post == null) {
+      return res.status(404).json("Post not found");
+    }
     if (req.userSearching._id.equals(post.userId)) {
       let changeObject = {};
       let img;
@@ -113,12 +133,12 @@ updatePost = async (req, res) => {
         .json('Login again with valid credentials to edit post');
     }
   } catch (err) {
-    return res.status(401).json(err);
+    return res.status(401).json(err.message);
   }
 };
 
 // middleware done
-likePost = async (req, res) => {
+const likePost = async (req, res) => {
   try {
     const userIdLikingThePost = req.userSearching._id;
     const post = await Post.findById(req.params.id);
@@ -143,7 +163,7 @@ likePost = async (req, res) => {
 };
 
 // middleware done
-unlikePost = async (req, res) => {
+const unlikePost = async (req, res) => {
   try {
     const userIdDislikingThePost = req.userSearching._id;
     const post = await Post.findById(req.params.id);
@@ -167,6 +187,21 @@ unlikePost = async (req, res) => {
   }
 };
 
+const getMyPosts = async (req, res) => {
+  try {
+    const allMyPosts = await Post.find({ userId: req.id });
+    if (allMyPosts) {
+      res.status(200).json(allMyPosts);
+    } else {
+      return res.status(404).json("No posts found");
+    }
+  } catch (err) {
+    console.log("Hi");
+    res.status(500).json(err.message);
+  }
+};
+
+
 module.exports = {
   createPost,
   getPost,
@@ -175,4 +210,5 @@ module.exports = {
   updatePost,
   likePost,
   unlikePost,
+  getMyPosts,
 };

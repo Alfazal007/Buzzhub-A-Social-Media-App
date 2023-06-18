@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Password</title>
+</head>
+
+<body>
+    <form method="post" onsubmit="submitForm(event)">
+        <div>
+            <label for="password1">
+                Enter new password
+            </label>
+            <input type="password" id="password1" name="password1" required>
+        </div>
+        <br>
+        <div>
+            <label for="password2">
+                Confirm the password
+            </label>
+            <input type="password" id="password2" name="password2" required>
+        </div>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+    <script>
+        async function submitForm(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const form = document.querySelector('form');
+            const formData = new FormData(form);
+
+            // Convert form data to JSON
+            const jsonData = {};
+            for (const [key, value] of formData.entries()) {
+                jsonData[key] = value;
+            }
+
+            try {
+                // Send JSON data to the server asynchronously
+                const response = await fetch(window.location.href, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jsonData)
+                });
+
+                // Handle the response as text
+                const htmlResponse = await response.text();
+
+                document.open();
+                document.write(htmlResponse);
+                document.close();
+
+            } catch (error) {
+                // Handle errors
+                console.error(error);
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>
