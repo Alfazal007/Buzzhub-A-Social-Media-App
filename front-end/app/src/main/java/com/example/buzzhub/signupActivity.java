@@ -62,12 +62,13 @@ public class signupActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(signupActivity.this);
         progressDialog.setTitle("Creating your Account");
-        progressDialog.setMessage("Your account is creating");
+        progressDialog.setMessage("Your account is created");
 
         sign_up.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-//                progressDialog.show();
+                progressDialog.show();
 
                 RegisterUser user = new RegisterUser(name.getText().toString(), email.getText().toString(), password.getText().toString());
 
@@ -83,21 +84,20 @@ public class signupActivity extends AppCompatActivity {
                 call.enqueue(new Callback<RegisterUser>() {
                     @Override
                     public void onResponse(Call<RegisterUser> call, Response<RegisterUser> response) {
+                        progressDialog.dismiss();
                         if(!response.isSuccessful())
                         {
-                            Toast.makeText(signupActivity.this, "Error " + response.code(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(signupActivity.this, "Account already exists, try to log in!", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
                         Intent success = new Intent(signupActivity.this, loginpageActivity.class);
                         startActivity(success);
-
                     }
 
                     @Override
                     public void onFailure(Call<RegisterUser> call, Throwable t) {
                         Toast.makeText(signupActivity.this, "Error " + t.getMessage(), Toast.LENGTH_SHORT).show();
-
                     }
                 });
             }

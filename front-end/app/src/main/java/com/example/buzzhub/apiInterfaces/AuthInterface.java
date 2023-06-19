@@ -14,4 +14,11 @@ public interface AuthInterface {
     })
     @POST("register")
     Call<RegisterUser> createUser(@Body RegisterUser user);
+
+    @Headers({
+            "Content-Type: application/json",
+            "Accept: application/json"
+    })
+    @POST("login")
+    Call<String> loginUser(@Body RegisterUser user);
 }

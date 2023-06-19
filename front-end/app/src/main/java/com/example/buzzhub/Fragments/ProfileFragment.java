@@ -1,7 +1,9 @@
 package com.example.buzzhub.Fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -133,6 +135,11 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), landingActivity.class);
                 //You should right your logout code here to delete the details in local app database
+
+                SharedPreferences preferences = getActivity().getSharedPreferences("MY_APP",Context.MODE_PRIVATE);
+                preferences.edit().putString("TOKEN","").apply();
+
+
                 startActivity(intent);
                 getActivity().finish();
             }
