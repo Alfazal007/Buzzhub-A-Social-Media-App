@@ -27,6 +27,10 @@ const PostSchema = new mongoose.Schema(
             ref: 'User',
             required: true
         },
+        profilePic: {
+            type: Buffer,
+            default: null,
+        },
     }, { timestamps: true }
 );
 
