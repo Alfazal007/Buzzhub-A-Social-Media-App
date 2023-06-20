@@ -22,14 +22,27 @@ import android.widget.Toast;
 
 import com.example.buzzhub.MainActivity;
 import com.example.buzzhub.R;
+import com.example.buzzhub.apiInterfaces.UserInterface;
 import com.example.buzzhub.editprofileActivity;
 import com.example.buzzhub.emailchange_Activity;
 import com.example.buzzhub.landingActivity;
 import com.example.buzzhub.profile_password_changeActivity;
 
+import java.io.IOException;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class ProfileFragment extends Fragment {
 
     ImageView setting,editprofile;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -169,10 +182,55 @@ public class ProfileFragment extends Fragment {
         agree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), MainActivity.class);
+
                 //You should right your delete account code here to delete the account in the database and also in local app database
-                startActivity(intent);
-                getActivity().finish();
+                SharedPreferences preferences = getActivity().getSharedPreferences("MY_APP",Context.MODE_PRIVATE);
+                String retrievedToken  = preferences.getString("TOKEN","");
+                OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+                httpClient.addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request original = chain.request();
+                        Request.Builder requestBuilder = original.newBuilder()
+                                .header("Authorization", "Bearer " + retrievedToken);
+                        Request request = requestBuilder.build();
+                        return chain.proceed(request);
+                    }
+                });
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://192.168.1.15:8800/api/users/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .client(httpClient.build())
+                        .build();
+
+                UserInterface userInterface = retrofit.create(UserInterface.class);
+
+                Call<String> call = userInterface.deleteAccount();
+                call.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                        if(!response.isSuccessful())
+                        {
+                            Toast.makeText(getContext() ,"Error, Try Again later", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        Toast.makeText(getContext() ,response.body(), Toast.LENGTH_SHORT).show();
+                        SharedPreferences preferences = getActivity().getSharedPreferences("MY_APP",Context.MODE_PRIVATE);
+                        preferences.edit().putString("TOKEN","").apply();
+                        Intent intent = new Intent(getContext(), MainActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Toast.makeText(getContext() ,t.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
             }
         });
 

@@ -12,7 +12,7 @@ import android.widget.ImageView;
 public class emailchange_Activity extends AppCompatActivity {
 
     ImageView back;
-    EditText oldmail,newmail,password;
+    EditText newmail,password;
     Button cngmail;
 
     @Override
@@ -21,7 +21,6 @@ public class emailchange_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_emailchange);
 
         back = findViewById(R.id.backtoprofile);
-        oldmail = findViewById(R.id.old_emailchange);
         newmail = findViewById(R.id.new_emailchange);
         password = findViewById(R.id.pass_emailchange);
         cngmail = findViewById(R.id.changemail_button);
@@ -39,6 +38,8 @@ public class emailchange_Activity extends AppCompatActivity {
                 Intent bl = new Intent(emailchange_Activity.this, landingActivity.class);
                 startActivity(bl);
                 finish();
+
+                
             }
         });
     }

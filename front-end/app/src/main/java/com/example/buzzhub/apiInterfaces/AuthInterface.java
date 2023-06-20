@@ -21,4 +21,6 @@ public interface AuthInterface {
     })
     @POST("login")
     Call<String> loginUser(@Body RegisterUser user);
+
+
 }
