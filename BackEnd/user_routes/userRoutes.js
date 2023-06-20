@@ -30,7 +30,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // get a user through id
-router.get('/:id', isLoggedIn, getUserFromId);
+router.get('/', isLoggedIn, getUserFromId);
 // get a user using username also get the posts of this user
 router.get('/username/:username', isLoggedIn, getUserFromUsername);
 
