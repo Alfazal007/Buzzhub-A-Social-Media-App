@@ -19,4 +19,7 @@ public interface UserInterface {
     })
     @PUT("update")
     Call<String> updateEmailOrPassword(@Body UpdateEmailAndPassword emailChange);
+
+
+
 }
