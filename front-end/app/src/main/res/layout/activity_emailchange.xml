@@ -62,7 +62,7 @@
         android:fontFamily="@font/poppins"
         android:hint="Enter Password"
         android:layout_marginLeft="55dp"
-        android:inputType="text"
+        android:inputType="textPassword"
         android:layout_marginTop="20dp"
         android:textColor="@color/white"
         android:paddingLeft="10dp"
@@ -79,6 +79,8 @@
         android:gravity="center"
         android:text="Change Email"
         app:cornerRadius ="7dp"/>
+
+
 
 
 </LinearLayout>
