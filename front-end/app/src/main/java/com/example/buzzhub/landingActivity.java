@@ -2,7 +2,9 @@ package com.example.buzzhub;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +32,10 @@ public class landingActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                SharedPreferences preferences = getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
+                preferences.edit().putString("URL","http://192.168.1.15:8800").apply();
+
                 Intent log = new Intent(landingActivity.this, loginpageActivity.class);
                 startActivity(log);
                 finish();

@@ -67,8 +67,10 @@ public class profile_password_changeActivity extends AppCompatActivity {
                     }
                 });
 
+                String URL  = preferences.getString("URL","");
+
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://192.168.1.15:8800/api/users/")
+                        .baseUrl(URL+"/api/users/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .client(httpClient.build())
                         .build();

@@ -77,8 +77,11 @@ public class loginpageActivity extends AppCompatActivity {
                 //Function Code Here
                 RegisterUser user = new RegisterUser("",userEmail,userPass);
 
+                SharedPreferences preferences = getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
+                String URL  = preferences.getString("URL","");
+
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://192.168.1.15:8800/api/auth/")
+                        .baseUrl(URL+"/api/auth/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 

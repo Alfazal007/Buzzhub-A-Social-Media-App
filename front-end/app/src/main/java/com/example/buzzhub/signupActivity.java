@@ -3,7 +3,9 @@ package com.example.buzzhub;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -72,9 +74,13 @@ public class signupActivity extends AppCompatActivity {
 
                 RegisterUser user = new RegisterUser(name.getText().toString(), email.getText().toString(), password.getText().toString());
 
+                SharedPreferences preferences = getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
+                String URL  = preferences.getString("URL","");
+
+
                 //Login Function Should be Written
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://192.168.1.15:8800/api/auth/")
+                        .baseUrl(URL+"/api/auth/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
