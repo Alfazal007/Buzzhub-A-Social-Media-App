@@ -17,11 +17,23 @@ class CustomError extends Error {
 // middleware done
 const getUserFromId = async (req, res) => {
   try {
-    const userFromDB = await User.find({ _id: req.params.id }).select(
-      'username following followers'
+    const userFromDB = await User.find({ _id: req.id }).select(
+      'username following followers bio img'
     );
+    const posts = await Post.find({ userId: req.id });
+    const followersLength = userFromDB[0].followers.length;
+    const followingLength = userFromDB[0].following.length;
+    const postsLength = posts.length;
     if (userFromDB.length == 1) {
-      return res.status(200).json(userFromDB);
+      const userObject = {
+        username: userFromDB[0].username,
+        following: followingLength,
+        followers: followersLength,
+        bio: userFromDB[0].bio,
+        img: userFromDB[0].img,
+        posts: postsLength
+      };
+      return res.status(200).json(userObject);
     }
     return res.status(404).json('User not found');
   } catch (err) {

@@ -19,7 +19,8 @@ const createPost = async (req, res) => {
     }
     const userId = req.userSearching._id;
     const username = req.userSearching.username;
-    const newPost = new Post({ userId, description, img, username });
+    const profilePic = req.userSearching.img;
+    const newPost = new Post({ userId, description, img, username, profilePic });
     await newPost.validate();
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
@@ -51,11 +52,11 @@ const getPost = async (req, res) => {
   try {
     const postSearching = await Post.findById(req.params.id);
     if (postSearching) {
-      const { userId, description, img, likes, username } = postSearching;
+      const { userId, description, img, likes, username, profilePic } = postSearching;
       const imgBase64 = img ? img.toString('base64') : null;
       return res
         .status(200)
-        .json({ userId, description, img: imgBase64, likes, username });
+        .json({ userId, description, img: imgBase64, likes, username, profilePic });
     } else {
       res.status(404).json('Post not found');
     }
