@@ -36,6 +36,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.buzzhub.Fragments.ProfileFragment;
 import com.example.buzzhub.apiInterfaces.UserInterface;
 
 import java.io.File;
@@ -151,6 +152,8 @@ public class editprofileActivity extends AppCompatActivity {
                                 }
 
                                 Toast.makeText(editprofileActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                                Intent success = new Intent(editprofileActivity.this, homepageActivity.class);
+                                startActivity(success);
                             }
 
                             @Override
@@ -170,17 +173,8 @@ public class editprofileActivity extends AppCompatActivity {
         filech.requestWindowFeature(Window.FEATURE_NO_TITLE);
         filech.setContentView(R.layout.post_choose_file);
 
-        TextView camera = filech.findViewById(R.id.choose_camera);
         TextView gallery = filech.findViewById(R.id.choose_gallery);
 
-        camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent icam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(icam,cmreq);
-                filech.dismiss();
-            }
-        });
 
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,12 +205,7 @@ public class editprofileActivity extends AppCompatActivity {
         Bitmap img;
 
         if(resultCode== Activity.RESULT_OK){
-            if(requestCode==cmreq){
-                //for camera
-                img =(Bitmap)(data.getExtras().get("data"));
-                preview.setImageBitmap(img);
 
-            } else
             if (requestCode==galreq) {
                 //for gallery
 

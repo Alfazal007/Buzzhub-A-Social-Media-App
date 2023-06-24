@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // create a new post
-router.post('/', upload.single('img'), isLoggedIn, createPost);
+router.post('/post', upload.single('img'), isLoggedIn, createPost);
 
 // get a post ---- specific
 router.get('/:id', isLoggedIn, getPost);
