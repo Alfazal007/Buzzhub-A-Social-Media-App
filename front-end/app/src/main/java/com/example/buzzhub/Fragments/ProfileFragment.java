@@ -4,8 +4,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -18,6 +21,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.buzzhub.MainActivity;
@@ -26,6 +30,8 @@ import com.example.buzzhub.apiInterfaces.UserInterface;
 import com.example.buzzhub.editprofileActivity;
 import com.example.buzzhub.emailchange_Activity;
 import com.example.buzzhub.landingActivity;
+import com.example.buzzhub.model.ImageModel;
+import com.example.buzzhub.model.Profile;
 import com.example.buzzhub.profile_password_changeActivity;
 
 import java.io.IOException;
@@ -44,6 +50,8 @@ public class ProfileFragment extends Fragment {
     ImageView setting,editprofile;
 
 
+
+
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -55,6 +63,13 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         setting = view.findViewById(R.id.profile_setting);
         editprofile = view.findViewById(R.id.edit_profile);
+        ImageView profile = view.findViewById(R.id.profile_pic);
+        TextView username = view.findViewById(R.id.username_inside_layout);
+        TextView bio = view.findViewById(R.id.user_bio);
+        TextView followers = view.findViewById(R.id.follower_count);
+        TextView following = view.findViewById(R.id.following_count);
+        TextView postCount = view.findViewById(R.id.posts_count);
+        getProfileData(profile,username,bio,followers,following,postCount);
 
         editprofile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +86,70 @@ public class ProfileFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private void getProfileData(ImageView profile,TextView username,TextView bio,TextView followers,TextView following,TextView postCount) {
+
+        SharedPreferences preferences = getActivity().getSharedPreferences("MY_APP",Context.MODE_PRIVATE);
+        String retrievedToken  = preferences.getString("TOKEN","");
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request original = chain.request();
+                Request.Builder requestBuilder = original.newBuilder()
+                        .header("Authorization", "Bearer " + retrievedToken);
+                Request request = requestBuilder.build();
+                return chain.proceed(request);
+            }
+        });
+
+        String URL  = preferences.getString("URL","");
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(URL+"/api/users/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
+                .build();
+
+        UserInterface userInterface = retrofit.create(UserInterface.class);
+        Call<Profile> call = userInterface.getProfile();
+
+        try{
+            call.enqueue(new Callback<Profile>() {
+                @Override
+                public void onResponse(Call<Profile> call, retrofit2.Response<Profile> response) {
+                    if(!response.isSuccessful())
+                    {
+                        Toast.makeText(getActivity(),"Error : " + response.message(),Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    ImageModel imageFromServer = response.body().img;
+                    Profile data = response.body();
+                    username.setText(data.username);
+                    bio.setText(data.bio);
+                    followers.setText(String.valueOf(data.followers));
+                    following.setText(String.valueOf(data.following));
+                    postCount.setText(String.valueOf(data.posts));
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageFromServer.data, 0, imageFromServer.data.length);
+                    profile.setImageBitmap(bitmap);
+
+                }
+
+                @Override
+                public void onFailure(Call<Profile> call, Throwable t) {
+                    Toast.makeText(getActivity(),"Error bro",Toast.LENGTH_SHORT).show();
+
+                }
+            });
+        }
+        catch(Exception error)
+        {
+            Toast.makeText(getActivity(),error.toString(),Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
     public void showBottomDialog(){

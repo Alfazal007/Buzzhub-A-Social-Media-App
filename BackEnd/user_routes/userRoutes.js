@@ -16,7 +16,6 @@ const {
 const multer = require('multer');
 const isLoggedIn = require('../middleware/isLoggedIn');
 
-
 // Set up multer storage engine
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -30,7 +29,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // get a user through id
-router.get('/', isLoggedIn, getUserFromId);
+router.get('/profile', isLoggedIn, getUserFromId);
 // get a user using username also get the posts of this user
 router.get('/username/:username', isLoggedIn, getUserFromUsername);
 
@@ -48,11 +47,15 @@ router.put('/:id/follow', isLoggedIn, followUser);
 // unfollow a user
 router.put('/:id/unfollow', isLoggedIn, unfollowUser);
 
-
 router.get('/forgot-password/id/:id/token/:token', serveChangePasswordPage);
 router.post('/forgot-password/id/:id/token/:token', handleFormPage);
 
-router.put('/update-normal', upload.single('img'), isLoggedIn, updateNormalInfo);
+router.put(
+  '/update-normal',
+  upload.single('img'),
+  isLoggedIn,
+  updateNormalInfo
+);
 router.put('/remove-bg-img', isLoggedIn, removeBgIMG);
 
 module.exports = router;
