@@ -1,17 +1,24 @@
 package com.example.buzzhub;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.View;
@@ -21,12 +28,39 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.example.buzzhub.Fragments.ProfileFragment;
+import com.example.buzzhub.apiInterfaces.UserInterface;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class editprofileActivity extends AppCompatActivity {
+    String filePath = "";
 
     TextView choosefile;
     ImageView preview,back;
-    EditText name,bio;
     private final int cmreq = 67;
     private final int galreq = 79;
     ProgressDialog progressDialog;
@@ -62,16 +96,71 @@ public class editprofileActivity extends AppCompatActivity {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.show();
+//                progressDialog.show();
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        progressDialog.dismiss();
+
                         //Updating the profile by sending the data to the database from here on the click
-                        Intent intent = new Intent(editprofileActivity.this, homepageActivity.class);
-                        startActivity(intent);
-                        finish();
+//                        Intent intent = new Intent(editprofileActivity.this, homepageActivity.class);
+//                        startActivity(intent);
+//                        finish();
+
+                        SharedPreferences preferences = getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
+                        String retrievedToken  = preferences.getString("TOKEN","");
+                        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+                        httpClient.addInterceptor(new Interceptor() {
+                            @NonNull
+                            @Override
+                            public Response intercept(@NonNull Chain chain) throws IOException {
+                                Request original = chain.request();
+                                Request.Builder requestBuilder = original.newBuilder()
+                                        .header("Authorization", "Bearer " + retrievedToken);
+                                Request request = requestBuilder.build();
+                                return chain.proceed(request);
+                            }
+                        });
+
+                        String URL  = preferences.getString("URL","");
+
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl(URL+"/api/users/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .client(httpClient.build())
+                                .build();
+
+                        UserInterface userInterface = retrofit.create(UserInterface.class);
+                        File file = new File(filePath);
+                        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"),file);
+
+                        EditText username = findViewById(R.id.pr_username);
+                        EditText bio = findViewById(R.id.pr_bio);
+
+                        MultipartBody.Part body = MultipartBody.Part.createFormData("img",file.getName(),requestFile);
+                        RequestBody userName = RequestBody.create(MediaType.parse("multipart/form-data"),username.getText().toString());
+                        RequestBody Bio = RequestBody.create(MediaType.parse("multipart/form-data"),bio.getText().toString());
+
+
+                        Call<ResponseBody> call = userInterface.updateUser(body,userName,Bio);
+                        call.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                                if(!response.isSuccessful())
+                                {
+                                    Toast.makeText(editprofileActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                }
+
+                                Toast.makeText(editprofileActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                                Intent success = new Intent(editprofileActivity.this, homepageActivity.class);
+                                startActivity(success);
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                bio.setText(t.getMessage());
+                            }
+                        });
                     }
                 },2500);
 
@@ -84,25 +173,22 @@ public class editprofileActivity extends AppCompatActivity {
         filech.requestWindowFeature(Window.FEATURE_NO_TITLE);
         filech.setContentView(R.layout.post_choose_file);
 
-        TextView camera = filech.findViewById(R.id.choose_camera);
         TextView gallery = filech.findViewById(R.id.choose_gallery);
 
-        camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent icam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(icam,cmreq);
-                filech.dismiss();
-            }
-        });
 
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent gal = new Intent(Intent.ACTION_PICK);
-                gal.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(gal,galreq);
-                filech.dismiss();
+
+                if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    // Permission not granted, request it
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, galreq);
+                    filech.dismiss();
+                }
+
             }
         });
 
@@ -116,18 +202,40 @@ public class editprofileActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Bitmap img;
 
         if(resultCode== Activity.RESULT_OK){
-            if(requestCode==cmreq){
-                //for camera
-                Bitmap img =(Bitmap)(data.getExtras().get("data"));
-                preview.setImageBitmap(img);
-            } else
+
             if (requestCode==galreq) {
                 //for gallery
-                preview.setImageURI(data.getData());
 
+                Uri uri = data.getData();
+                preview.setImageURI(uri);
+                filePath = getImagePathFromUri(this,uri);
+                img = BitmapFactory.decodeFile(filePath);
             }
+
+
         }
     }
+
+    private String getImagePathFromUri(Context context, Uri uri) {
+        String imagePath = null;
+        if (uri.getScheme().equals("content")) {
+            ContentResolver contentResolver = context.getContentResolver();
+            Cursor cursor = contentResolver.query(uri, null, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                if (columnIndex != -1) {
+                    imagePath = cursor.getString(columnIndex);
+                }
+                cursor.close();
+            }
+        } else if (uri.getScheme().equals("file")) {
+            imagePath = uri.getPath();
+        }
+        return imagePath;
+    }
+
+
 }

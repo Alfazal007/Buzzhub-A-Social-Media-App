@@ -1,6 +1,8 @@
 package com.example.buzzhub.Adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,8 +41,12 @@ public class HomepostAdapter extends RecyclerView.Adapter<HomepostAdapter.viewHo
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
 
         HomepostModel model = list.get(position);
-        holder.proimg.setImageResource(model.getProfileimg());
-        holder.postimg.setImageResource(model.getPostimg());
+
+        Bitmap profile = BitmapFactory.decodeByteArray(model.getProfileimg().data, 0, model.getProfileimg().data.length);
+        Bitmap post = BitmapFactory.decodeByteArray(model.getPostimg().data, 0, model.getPostimg().data.length);
+
+        holder.proimg.setImageBitmap(profile);
+        holder.postimg.setImageBitmap(post);
         holder.username.setText(model.getUsername());
         holder.about.setText(model.getAbout());
         holder.like.setText(model.getLike());

@@ -34,22 +34,13 @@
         app:layout_constraintTop_toBottomOf="@id/choosefiletext">
 
         <TextView
-            android:id="@+id/choose_camera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableTop="@drawable/camera"
-            android:fontFamily="@font/poppins"
-            android:text="Camera"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
-
-        <TextView
             android:id="@+id/choose_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
             android:drawableTop="@drawable/gallery"
             android:fontFamily="@font/poppins"
+            android:layout_marginRight="60dp"
             android:text="Gallery"
             android:textColor="@color/white"
             android:textSize="18sp" />

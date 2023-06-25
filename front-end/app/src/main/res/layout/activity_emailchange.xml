@@ -38,19 +38,7 @@
     </LinearLayout>
 
 
-    <EditText
-        android:id="@+id/old_emailchange"
-        android:layout_width="290dp"
-        android:layout_height="43dp"
-        android:background="@drawable/blueborder"
-        android:fontFamily="@font/poppins"
-        android:hint="Old Email"
-        android:layout_marginLeft="55dp"
-        android:inputType="text"
-        android:layout_marginTop="120dp"
-        android:textColor="@color/white"
-        android:paddingLeft="10dp"
-        android:textColorHint="@color/hintcolor" />
+
 
     <EditText
         android:id="@+id/new_emailchange"
@@ -61,7 +49,7 @@
         android:hint="New Email"
         android:layout_marginLeft="55dp"
         android:inputType="text"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="120dp"
         android:textColor="@color/white"
         android:paddingLeft="10dp"
         android:textColorHint="@color/hintcolor" />
@@ -74,7 +62,7 @@
         android:fontFamily="@font/poppins"
         android:hint="Enter Password"
         android:layout_marginLeft="55dp"
-        android:inputType="text"
+        android:inputType="textPassword"
         android:layout_marginTop="20dp"
         android:textColor="@color/white"
         android:paddingLeft="10dp"
@@ -91,6 +79,8 @@
         android:gravity="center"
         android:text="Change Email"
         app:cornerRadius ="7dp"/>
+
+
 
 
 </LinearLayout>
