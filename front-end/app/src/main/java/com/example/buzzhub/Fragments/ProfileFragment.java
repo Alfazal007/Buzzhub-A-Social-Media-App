@@ -1,6 +1,7 @@
 package com.example.buzzhub.Fragments;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,6 +31,7 @@ import com.example.buzzhub.apiInterfaces.UserInterface;
 import com.example.buzzhub.editprofileActivity;
 import com.example.buzzhub.emailchange_Activity;
 import com.example.buzzhub.landingActivity;
+import com.example.buzzhub.loginpageActivity;
 import com.example.buzzhub.model.ImageModel;
 import com.example.buzzhub.model.Profile;
 import com.example.buzzhub.profile_password_changeActivity;
@@ -48,6 +50,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ProfileFragment extends Fragment {
 
     ImageView setting,editprofile;
+    ProgressDialog progressDialog;
 
 
 
@@ -60,6 +63,9 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle("User Profile");
+        progressDialog.setMessage("Getting User Info");
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         setting = view.findViewById(R.id.profile_setting);
         editprofile = view.findViewById(R.id.edit_profile);
@@ -89,7 +95,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getProfileData(ImageView profile,TextView username,TextView bio,TextView followers,TextView following,TextView postCount) {
-
+        progressDialog.show();
         SharedPreferences preferences = getActivity().getSharedPreferences("MY_APP",Context.MODE_PRIVATE);
         String retrievedToken  = preferences.getString("TOKEN","");
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
@@ -119,21 +125,33 @@ public class ProfileFragment extends Fragment {
             call.enqueue(new Callback<Profile>() {
                 @Override
                 public void onResponse(Call<Profile> call, retrofit2.Response<Profile> response) {
+                    progressDialog.dismiss();
                     if(!response.isSuccessful())
                     {
                         Toast.makeText(getActivity(),"Error : " + response.message(),Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    ImageModel imageFromServer = response.body().img;
+                    try{
+                        ImageModel imageFromServer = response.body().img;
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(imageFromServer.data, 0, imageFromServer.data.length);
+                        profile.setImageBitmap(bitmap);
+                    }
+                    catch(Exception e)
+                    {
+                        Toast.makeText(getActivity(),"No profile picture",Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    TextView headerUsername = getActivity().findViewById(R.id.profile_username1);
                     Profile data = response.body();
                     username.setText(data.username);
+                    headerUsername.setText(data.username);
                     bio.setText(data.bio);
                     followers.setText(String.valueOf(data.followers));
                     following.setText(String.valueOf(data.following));
                     postCount.setText(String.valueOf(data.posts));
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageFromServer.data, 0, imageFromServer.data.length);
-                    profile.setImageBitmap(bitmap);
+
 
                 }
 

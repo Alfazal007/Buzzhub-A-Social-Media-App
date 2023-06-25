@@ -65,7 +65,7 @@
 
             <TextView
                 android:id="@+id/username_inside_layout"
-                android:layout_width="wrap_content"
+                android:layout_width="242dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="25dp"
@@ -90,7 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="-60dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:src="@drawable/edit" />
 
     </LinearLayout>
@@ -115,7 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="25"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="17sp" />
 
@@ -140,7 +140,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="255"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="17sp" />
 
@@ -165,7 +165,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="5"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="17sp" />
 

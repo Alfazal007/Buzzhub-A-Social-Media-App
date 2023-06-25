@@ -1,37 +1,42 @@
 package com.example.buzzhub.model;
 
 
+import com.google.gson.annotations.SerializedName;
+
 // hi
 public class HomepostModel {
 
-    int profileimg,postimg,bookmarkimg;
-    String username,about,like,comment,share,caption;
+    @SerializedName("profilePic")
+    ImageModel profileimg;
 
-    public HomepostModel(int profileimg, int postimg, String username, String about, String like, String comment, String share, String caption) {
+    @SerializedName("img")
+    ImageModel postimg;
+    String username,about,like,comment,share,description;
+
+    public HomepostModel(ImageModel profileimg, ImageModel postimg, String username, String about, String like, String comment, String share, String caption) {
         this.profileimg = profileimg;
         this.postimg = postimg;
-        this.bookmarkimg = bookmarkimg;
         this.username = username;
         this.about = about;
         this.like = like;
         this.comment = comment;
         this.share = share;
-        this.caption = caption;
+        this.description = caption;
     }
 
-    public int getProfileimg() {
+    public ImageModel getProfileimg() {
         return profileimg;
     }
 
-    public void setProfileimg(int profileimg) {
+    public void setProfileimg(ImageModel profileimg) {
         this.profileimg = profileimg;
     }
 
-    public int getPostimg() {
+    public ImageModel getPostimg() {
         return postimg;
     }
 
-    public void setPostimg(int postimg) {
+    public void setPostimg(ImageModel postimg) {
         this.postimg = postimg;
     }
 
@@ -76,10 +81,10 @@ public class HomepostModel {
     }
 
     public String getCaption() {
-        return caption;
+        return description;
     }
 
     public void setCaption(String caption) {
-        this.caption = caption;
+        this.description = caption;
     }
 }

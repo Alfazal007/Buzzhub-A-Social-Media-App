@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="480dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="580dp"
     android:background="@color/dark">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_marginTop="5dp"
         android:id="@+id/post_profile"
         android:layout_width="60dp"
         android:layout_height="50dp"
         android:layout_marginStart="7dp"
+        android:layout_marginTop="5dp"
         android:src="@drawable/useradd"
         app:civ_border_color="@color/blue"
         app:civ_border_width="2dp"
@@ -57,7 +57,8 @@
     <ImageView
         android:id="@+id/home_post_image"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="350dp"
+        android:layout_marginTop="10dp"
         android:src="@drawable/zoro"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -68,10 +69,11 @@
         android:id="@id/like_post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableTop="@drawable/like"
         android:layout_marginLeft="10dp"
-        android:text="69"
+        android:layout_marginTop="10dp"
+        android:drawableTop="@drawable/like"
         android:gravity="center"
+        android:text="69"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_post_image" />
@@ -81,9 +83,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="52dp"
+        android:layout_marginTop="10dp"
         android:drawableTop="@drawable/comment"
         android:gravity="center"
         android:text="69"
+
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_post_image" />
@@ -93,9 +97,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="96dp"
+        android:layout_marginTop="10dp"
         android:drawableTop="@drawable/share"
         android:gravity="center"
         android:text="69"
+
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_post_image" />
@@ -104,22 +110,27 @@
         android:id="@+id/bookmark_post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/bookmark"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
+        android:src="@drawable/bookmark"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_post_image" />
 
     <TextView
 
         android:id="@+id/caption_in_post"
-        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:layout_marginTop="64dp"
         android:text="Caption"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:textColor="@color/white"
         android:textSize="18sp"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_post_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
