@@ -32,6 +32,7 @@ const compressImageMiddleware = async (req, res, next) => {
             .jpeg({ quality: 80 }) // Set the desired JPEG quality (80% in this example)
             .toFile(compressedFilePath); // Overwrite the original file with the compressed version
         // Update req.file with the compressed file details
+        fs.unlinkSync(req.file.path);
         req.file.path = compressedFilePath;
         req.file.size = (await stat(compressedFilePath)).size;
         // Get the file size using synchronous method
