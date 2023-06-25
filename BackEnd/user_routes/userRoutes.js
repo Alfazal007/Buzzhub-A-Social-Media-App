@@ -14,12 +14,11 @@ const {
   removeBgIMG,
 } = require('../controllers/userController');
 const multer = require('multer');
-const sharp = require("sharp");
-const fs = require("fs");
+const sharp = require('sharp');
+const fs = require('fs');
 const util = require('util');
 const stat = util.promisify(fs.stat);
 const isLoggedIn = require('../middleware/isLoggedIn');
-
 
 // Set up multer storage engine
 const storage = multer.diskStorage({
@@ -40,7 +39,10 @@ const compressImageMiddleware = async (req, res, next) => {
 
   try {
     // Compress the image using sharp
-    const compressedFilePath = req.file.path.replace(/(\.[\w\d_-]+)$/i, '-compressed$1');
+    const compressedFilePath = req.file.path.replace(
+      /(\.[\w\d_-]+)$/i,
+      '-compressed$1'
+    );
 
     await sharp(req.file.path)
       .jpeg({ quality: 80 }) // Set the desired JPEG quality (80% in this example)
@@ -55,7 +57,6 @@ const compressImageMiddleware = async (req, res, next) => {
 
     console.log('Compressed image size:', compressedFileSizeInKB, 'KB');
 
-
     next();
   } catch (error) {
     return res.status(500).json(error.message);
@@ -63,7 +64,7 @@ const compressImageMiddleware = async (req, res, next) => {
 };
 
 // get a user through id
-router.get('/', isLoggedIn, getUserFromId);
+router.get('/profile', isLoggedIn, getUserFromId);
 // get a user using username also get the posts of this user
 router.get('/username/:username', isLoggedIn, getUserFromUsername);
 
@@ -81,11 +82,16 @@ router.put('/:id/follow', isLoggedIn, followUser);
 // unfollow a user
 router.put('/:id/unfollow', isLoggedIn, unfollowUser);
 
-
 router.get('/forgot-password/id/:id/token/:token', serveChangePasswordPage);
 router.post('/forgot-password/id/:id/token/:token', handleFormPage);
 
-router.put('/update-normal', upload.single('img'), isLoggedIn, compressImageMiddleware, updateNormalInfo);
+router.put(
+  '/update-normal',
+  upload.single('img'),
+  isLoggedIn,
+  compressImageMiddleware,
+  updateNormalInfo
+);
 router.put('/remove-bg-img', isLoggedIn, removeBgIMG);
 
 module.exports = router;

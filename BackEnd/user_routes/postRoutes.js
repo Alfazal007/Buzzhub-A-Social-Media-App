@@ -10,8 +10,8 @@ const {
   getMyPosts,
 } = require('../controllers/postController');
 const multer = require('multer');
-const sharp = require("sharp");
-const fs = require("fs");
+const sharp = require('sharp');
+const fs = require('fs');
 const util = require('util');
 const stat = util.promisify(fs.stat);
 const isLoggedIn = require('../middleware/isLoggedIn');
@@ -35,7 +35,10 @@ const compressImageMiddleware = async (req, res, next) => {
 
   try {
     // Compress the image using sharp
-    const compressedFilePath = req.file.path.replace(/(\.[\w\d_-]+)$/i, '-compressed$1');
+    const compressedFilePath = req.file.path.replace(
+      /(\.[\w\d_-]+)$/i,
+      '-compressed$1'
+    );
 
     await sharp(req.file.path)
       .jpeg({ quality: 80 }) // Set the desired JPEG quality (80% in this example)
@@ -50,7 +53,6 @@ const compressImageMiddleware = async (req, res, next) => {
 
     console.log('Compressed image size:', compressedFileSizeInKB, 'KB');
 
-
     next();
   } catch (error) {
     return res.status(500).json(error.message);
@@ -58,7 +60,13 @@ const compressImageMiddleware = async (req, res, next) => {
 };
 
 // create a new post
-router.post('/', upload.single('img'), isLoggedIn, compressImageMiddleware, createPost);
+router.post(
+  '/post',
+  upload.single('img'),
+  isLoggedIn,
+  compressImageMiddleware,
+  createPost
+);
 
 // get a post ---- specific
 router.get('/:id', isLoggedIn, getPost);
@@ -72,7 +80,13 @@ router.get('/myposts/all', isLoggedIn, getMyPosts);
 router.delete('/:id', isLoggedIn, deletePost);
 
 // update a post
-router.put('/:id', upload.single('img'), isLoggedIn, compressImageMiddleware, updatePost);
+router.put(
+  '/:id',
+  upload.single('img'),
+  isLoggedIn,
+  compressImageMiddleware,
+  updatePost
+);
 
 // endpoint to like a post
 router.put('/:id/like', isLoggedIn, likePost);
