@@ -61,8 +61,8 @@
         <Constraint
             android:id="@+id/textView"
             motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="223dp"
+            android:layout_height="76dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintVertical_bias="0.669"
             motion:layout_constraintTop_toTopOf="parent"
