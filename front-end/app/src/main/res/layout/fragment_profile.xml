@@ -21,10 +21,10 @@
 
         <TextView
             android:id="@+id/profile_username1"
-            android:layout_width="wrap_content"
+            android:layout_width="322dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="15dp"
             android:text="Username"
             android:textColor="@color/white"
             android:textSize="25sp" />
@@ -34,7 +34,7 @@
             android:layout_width="29dp"
             android:layout_height="29dp"
             android:layout_gravity="center"
-            android:layout_marginLeft="215dp"
+            android:layout_marginLeft="20dp"
             android:src="@drawable/setting" />
     </LinearLayout>
 
@@ -65,7 +65,7 @@
 
             <TextView
                 android:id="@+id/username_inside_layout"
-                android:layout_width="242dp"
+                android:layout_width="252dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="25dp"
@@ -75,11 +75,11 @@
 
             <TextView
                 android:id="@+id/user_bio"
-                android:layout_width="wrap_content"
+                android:layout_width="300dp"
                 android:layout_height="70dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="10dp"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                android:text="Update you bio here"
                 android:textAlignment="textStart"
                 android:textColor="@color/white"
                 android:textSize="15sp" />
@@ -89,7 +89,7 @@
             android:id="@+id/edit_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="-60dp"
+            android:layout_marginStart="-45dp"
             android:layout_marginTop="30dp"
             android:src="@drawable/edit" />
 

@@ -52,12 +52,13 @@ public class HomeFragment extends Fragment {
 
         storyview = view.findViewById(R.id.story_view);
         list = new ArrayList<>(); // Pass the data profile image through list it will to Story model and story model will send it adapter and it will set the data and send back
-        list.add(new StoryModel(R.drawable.addclose));
-        list.add(new StoryModel(R.drawable.chatclose));
-        list.add(new StoryModel(R.drawable.homeclose));
-        list.add(new StoryModel(R.drawable.searchclose));
-        list.add(new StoryModel(R.drawable.addclose));
-        list.add(new StoryModel(R.drawable.addclose));
+        list.add(new StoryModel(R.drawable.ayanokoji));
+        list.add(new StoryModel(R.drawable.closeup));
+        list.add(new StoryModel(R.drawable.download));
+        list.add(new StoryModel(R.drawable.md));
+        list.add(new StoryModel(R.drawable.one));
+        list.add(new StoryModel(R.drawable.rdj));
+        list.add(new StoryModel(R.drawable.rohith));
 
         StoryAdapter adapter = new StoryAdapter(list,getContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);

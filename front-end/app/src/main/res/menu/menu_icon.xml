@@ -16,10 +16,10 @@
         android:title="Post"
         android:icon="@drawable/post"/>
 
-    <item
-        android:id="@+id/chat"
-        android:title="Chat"
-        android:icon="@drawable/chat"/>
+<!--    <item-->
+<!--        android:id="@+id/chat"-->
+<!--        android:title="Chat"-->
+<!--        android:icon="@drawable/chat"/>-->
 
     <item
         android:id="@+id/profile"
