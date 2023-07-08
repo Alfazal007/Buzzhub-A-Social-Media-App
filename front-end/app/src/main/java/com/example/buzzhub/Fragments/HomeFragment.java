@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.buzzhub.Adapter.HomepostAdapter;
@@ -39,6 +40,7 @@ public class HomeFragment extends Fragment {
     ArrayList<StoryModel> list;
     ArrayList<HomepostModel> homepostlist;
     ProgressDialog progressDialog;
+    ImageButton refresh;
 
     public HomeFragment() {
         // Required empty public constructor
