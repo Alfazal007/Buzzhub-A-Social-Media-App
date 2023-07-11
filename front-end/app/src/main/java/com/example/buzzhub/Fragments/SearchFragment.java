@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,6 @@ import android.widget.Toast;
 import com.example.buzzhub.R;
 import com.example.buzzhub.apiInterfaces.UserInterface;
 import com.example.buzzhub.model.Profile;
-import com.example.buzzhub.model.User;
 import com.example.buzzhub.searchuser_Activity;
 
 import java.io.IOException;
@@ -89,11 +89,11 @@ public class SearchFragment extends Fragment {
                         .build();
 
                 UserInterface userInterface = retrofit.create(UserInterface.class);
-                Call<User> call = userInterface.getUser(username.getText().toString());
+                Call<Profile> call = userInterface.getUser(username.getText().toString());
 
-                call.enqueue(new Callback<User>() {
+                call.enqueue(new Callback<Profile>() {
                     @Override
-                    public void onResponse(Call<User> call, retrofit2.Response<User> response) {
+                    public void onResponse(Call<Profile> call, retrofit2.Response<Profile> response) {
                         progressDialog.dismiss();
 
                         if(!response.isSuccessful())
@@ -103,7 +103,7 @@ public class SearchFragment extends Fragment {
                         }
 
                         Toast.makeText(getContext(), "Found", Toast.LENGTH_SHORT).show();
-                        User user = response.body();
+                        Profile user = response.body();
                         ImageView img = view.findViewById(R.id.addr_user);
                         TextView responseUsername = view.findViewById(R.id.add_username);
 
@@ -115,7 +115,7 @@ public class SearchFragment extends Fragment {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(getContext(), searchuser_Activity.class);
-                                intent.putExtra("userObject",user.username);
+                                intent.putExtra("username",user.username);
                                 startActivity(intent);
                             }
                         });
@@ -125,7 +125,7 @@ public class SearchFragment extends Fragment {
                     }
 
                     @Override
-                    public void onFailure(Call<User> call, Throwable t) {
+                    public void onFailure(Call<Profile> call, Throwable t) {
                         progressDialog.dismiss();
                         Toast.makeText(getActivity(), "Err", Toast.LENGTH_SHORT).show();
                     }

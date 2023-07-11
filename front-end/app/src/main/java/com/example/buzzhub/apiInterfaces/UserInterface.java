@@ -22,7 +22,7 @@ import retrofit2.http.Path;
 public interface UserInterface {
 
     @GET("{username}")
-    Call<User> getUser(@Path("username") String username);
+    Call<Profile> getUser(@Path("username") String username);
     @GET("profile")
     Call<Profile> getProfile();
     @DELETE("delete")

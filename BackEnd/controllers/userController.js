@@ -46,15 +46,17 @@ const getUserFromUsername = async (req, res) => {
   try {
     const userFromDB = await User.find({
       username: req.params.username,
-    }).select('username following followers img');
+    }).select('username following followers bio img');
 
     const posts = await Post.find({ username: req.params.username });
     if (userFromDB.length == 1) {
       const userObject = {
         username: userFromDB[0].username,
-        following: userFromDB[0].following,
-        followers: userFromDB[0].followers,
+        following: userFromDB[0].following.length,
+        followers: userFromDB[0].followers.length,
+        bio: userFromDB[0].bio,
         img: userFromDB[0].img,
+        posts: posts.length,
       };
       res.status(200).json(userObject);
     } else {
