@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,28 +31,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class searchuser_Activity extends AppCompatActivity {
 
+    ImageView img ;
+    TextView viewUsername,userNameAtTop,bio,followerCount,followingCount,PostCount ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searchuser);
-        
-        getProfile();
-    }
-
-    private void getProfile() {
-        String username = getIntent().getStringExtra("username");
-        ProgressDialog progressDialog;
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("User Profile");
-        progressDialog.setMessage("Getting User Info");
-        progressDialog.show();
-        TextView viewUsername = findViewById(R.id.username_inside_layout);
-        TextView bio = findViewById(R.id.user_bio);
-        ImageView img = findViewById(R.id.profile_pic);
-        TextView followerCount = findViewById(R.id.follower_count);
-        TextView followingCount = findViewById(R.id.following_count);
-        TextView PostCount = findViewById(R.id.posts_count);
-
+        Button followBtn = findViewById(R.id.follow_button);
+        viewUsername = findViewById(R.id.username_inside_layout);
+        userNameAtTop = findViewById(R.id.profile_username1);
+        bio = findViewById(R.id.user_bio);
+        img = findViewById(R.id.profile_pic);
+        followerCount = findViewById(R.id.follower_count);
+        followingCount = findViewById(R.id.following_count);
+        PostCount = findViewById(R.id.posts_count);
         SharedPreferences preferences = getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
         String retrievedToken  = preferences.getString("TOKEN","");
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
@@ -73,6 +68,89 @@ public class searchuser_Activity extends AppCompatActivity {
                 .client(httpClient.build())
                 .build();
 
+        getProfile(followBtn,retrofit,retrievedToken);
+
+        Retrofit retrofit1 = new Retrofit.Builder()
+                .baseUrl(URL+"/api/users/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
+                .build();
+
+
+        followBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String id = getIntent().getStringExtra("id");
+
+                String followOrUnFollow = followBtn.getText().toString();
+
+                if(followOrUnFollow.equals("Follow"))
+                {
+                    UserInterface userInterface = retrofit1.create(UserInterface.class);
+                    Call<String> call = userInterface.followUser(id);
+
+                    call.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                            if(!response.isSuccessful())
+                            {
+                                Toast.makeText(searchuser_Activity.this, "Error", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            Toast.makeText(searchuser_Activity.this, "Followed User!", Toast.LENGTH_SHORT).show();
+                            followBtn.setText("Unfollow");
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            Toast.makeText(searchuser_Activity.this, "Internal Server Error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+                else{
+                    UserInterface userInterface = retrofit1.create(UserInterface.class);
+                    Call<String> call = userInterface.unFollowUser(id);
+
+                    call.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                            if(!response.isSuccessful())
+                            {
+                                Toast.makeText(searchuser_Activity.this, "Error", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            Toast.makeText(searchuser_Activity.this, "Unfollowed User!", Toast.LENGTH_SHORT).show();
+                            followBtn.setText("Follow");
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            Toast.makeText(searchuser_Activity.this, "Internal Server Error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
+
+    private void getProfile(Button followBtn, Retrofit retrofit , String retrievedToken ) {
+        String username = getIntent().getStringExtra("username");
+        ProgressDialog progressDialog;
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("User Profile");
+        progressDialog.setMessage("Getting User Info");
+        progressDialog.show();
+
+
+
+
+
         UserInterface userInterface = retrofit.create(UserInterface.class);
         Call<Profile> call = userInterface.getUser(username);
 
@@ -90,11 +168,15 @@ public class searchuser_Activity extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(user.img.data,0,user.img.data.length);
                 img.setImageBitmap(bitmap);
                 viewUsername.setText(user.username);
+                userNameAtTop.setText(user.username);
                 bio.setText(user.bio);
                 followerCount.setText(String.valueOf(user.followers));
                 followingCount.setText(String.valueOf(user.following));
                 PostCount.setText(String.valueOf(user.posts));
-
+                if(user.followingUser)
+                {
+                    followBtn.setText("Unfollow");
+                }
             }
 
             @Override

@@ -2,7 +2,6 @@ package com.example.buzzhub.apiInterfaces;
 
 import com.example.buzzhub.model.Profile;
 import com.example.buzzhub.model.UpdateEmailAndPassword;
-import com.example.buzzhub.model.User;
 
 import okhttp3.MultipartBody;
 import okhttp3.Request;
@@ -25,6 +24,12 @@ public interface UserInterface {
     Call<Profile> getUser(@Path("username") String username);
     @GET("profile")
     Call<Profile> getProfile();
+
+    @PUT("{id}/follow")
+    Call<String> followUser(@Path("id") String id);
+
+    @PUT("{id}/unfollow")
+    Call<String> unFollowUser(@Path("id") String id);
     @DELETE("delete")
     Call<String> deleteAccount();
 

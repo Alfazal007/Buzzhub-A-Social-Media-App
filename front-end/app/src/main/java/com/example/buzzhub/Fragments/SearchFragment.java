@@ -115,6 +115,7 @@ public class SearchFragment extends Fragment {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(getContext(), searchuser_Activity.class);
+                                intent.putExtra("id",user.id);
                                 intent.putExtra("username",user.username);
                                 startActivity(intent);
                             }
