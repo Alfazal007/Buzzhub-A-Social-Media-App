@@ -157,6 +157,7 @@ public class ProfileFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<Profile> call, Throwable t) {
+                    progressDialog.dismiss();
                     Toast.makeText(getActivity(),"Error bro",Toast.LENGTH_SHORT).show();
 
                 }

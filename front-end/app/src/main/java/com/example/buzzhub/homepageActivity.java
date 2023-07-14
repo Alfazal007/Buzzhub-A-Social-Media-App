@@ -44,10 +44,10 @@ public class homepageActivity extends AppCompatActivity {
                     fragment =new PostFragment();
 
                 }
-                else if(item.getItemId() == R.id.chat) {
-                    fragment =new ChatFragment();
-
-                }
+//                else if(item.getItemId() == R.id.chat) {
+//                    fragment =new ChatFragment();
+//
+//                }
                 else if(item.getItemId() == R.id.profile) {
                     fragment =new ProfileFragment();
 

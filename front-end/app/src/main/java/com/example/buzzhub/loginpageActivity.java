@@ -63,6 +63,15 @@ public class loginpageActivity extends AppCompatActivity {
             }
         });
 
+        forgotpd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent fs = new Intent(loginpageActivity.this, forgotpassActivity.class);
+                startActivity(fs);
+                finish();
+            }
+        });
+
         progressDialog = new ProgressDialog(loginpageActivity.this);
         progressDialog.setTitle("Login");
         progressDialog.setMessage("Logging In into your account");

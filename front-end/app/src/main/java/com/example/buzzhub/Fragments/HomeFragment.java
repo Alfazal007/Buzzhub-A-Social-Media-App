@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.buzzhub.Adapter.HomepostAdapter;
@@ -39,6 +40,7 @@ public class HomeFragment extends Fragment {
     ArrayList<StoryModel> list;
     ArrayList<HomepostModel> homepostlist;
     ProgressDialog progressDialog;
+    ImageButton refresh;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -52,12 +54,13 @@ public class HomeFragment extends Fragment {
 
         storyview = view.findViewById(R.id.story_view);
         list = new ArrayList<>(); // Pass the data profile image through list it will to Story model and story model will send it adapter and it will set the data and send back
-        list.add(new StoryModel(R.drawable.addclose));
-        list.add(new StoryModel(R.drawable.chatclose));
-        list.add(new StoryModel(R.drawable.homeclose));
-        list.add(new StoryModel(R.drawable.searchclose));
-        list.add(new StoryModel(R.drawable.addclose));
-        list.add(new StoryModel(R.drawable.addclose));
+        list.add(new StoryModel(R.drawable.ayanokoji));
+        list.add(new StoryModel(R.drawable.closeup));
+        list.add(new StoryModel(R.drawable.download));
+        list.add(new StoryModel(R.drawable.md));
+        list.add(new StoryModel(R.drawable.one));
+        list.add(new StoryModel(R.drawable.rdj));
+        list.add(new StoryModel(R.drawable.rohith));
 
         StoryAdapter adapter = new StoryAdapter(list,getContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
@@ -65,6 +68,27 @@ public class HomeFragment extends Fragment {
         storyview.setNestedScrollingEnabled(false);
         storyview.setAdapter(adapter);
 
+        getFeed(view);
+        refresh = view.findViewById(R.id.refresh);
+
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFeed(view);
+            }
+        });
+        //from here post
+
+
+//        // add the post inb the code only should write the code here to fetch
+//        homepostlist.add(new HomepostModel(R.drawable.homeclose,R.drawable.zoro,"Zoro","Explorer","1500","1200","200","Straw-Hat pirates Vice-Captain"));
+//        homepostlist.add(new HomepostModel(R.drawable.homeclose,R.drawable.chopper,"Tony-Chopper","Doctor","115","112","20","Straw-Hat pirates Ship Doctor"));
+//        homepostlist.add(new HomepostModel(R.drawable.homeclose,R.drawable.brook,"Brook","Soul-King","150","120","2","Straw-Hat pirates Musician"));
+
+        return view;
+    }
+
+    private void getFeed(View view) {
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("Please wait");
         progressDialog.setMessage("Fetching feed");
@@ -121,18 +145,9 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<HomepostModel>> call, Throwable t) {
+                progressDialog.dismiss();
                 Toast.makeText(getContext(), t.getMessage().toString(), Toast.LENGTH_SHORT).show();
             }
         });
-
-        //from here post
-
-
-//        // add the post inb the code only should write the code here to fetch
-//        homepostlist.add(new HomepostModel(R.drawable.homeclose,R.drawable.zoro,"Zoro","Explorer","1500","1200","200","Straw-Hat pirates Vice-Captain"));
-//        homepostlist.add(new HomepostModel(R.drawable.homeclose,R.drawable.chopper,"Tony-Chopper","Doctor","115","112","20","Straw-Hat pirates Ship Doctor"));
-//        homepostlist.add(new HomepostModel(R.drawable.homeclose,R.drawable.brook,"Brook","Soul-King","150","120","2","Straw-Hat pirates Musician"));
-
-        return view;
     }
 }

@@ -48,11 +48,11 @@ public class HomepostAdapter extends RecyclerView.Adapter<HomepostAdapter.viewHo
         holder.proimg.setImageBitmap(profile);
         holder.postimg.setImageBitmap(post);
         holder.username.setText(model.getUsername());
-        holder.about.setText(model.getAbout());
-        holder.like.setText(model.getLike());
-        holder.share.setText(model.getShare());
-        holder.comment.setText(model.getComment());
-        holder.caption.setText(model.getCaption());
+//        holder.about.setText(model.getAbout());
+//        holder.like.setText(model.getLike());
+//        holder.share.setText(model.getShare());
+//        holder.comment.setText(model.getComment());
+        holder.caption.setText( model.getCaption());
     }
 
     @Override
@@ -70,10 +70,10 @@ public class HomepostAdapter extends RecyclerView.Adapter<HomepostAdapter.viewHo
             proimg =itemView.findViewById(R.id.post_profile);
             postimg =itemView.findViewById(R.id.home_post_image);
             username =itemView.findViewById(R.id.post_username);
-            about =itemView.findViewById(R.id.about_in_home);
-            like =itemView.findViewById(R.id.like_post);
-            comment =itemView.findViewById(R.id.comment_post);
-            share =itemView.findViewById(R.id.share_post);
+//            about =itemView.findViewById(R.id.about_in_home);
+//            like =itemView.findViewById(R.id.like_post);
+//            comment =itemView.findViewById(R.id.comment_post);
+//            share =itemView.findViewById(R.id.share_post);
             caption =itemView.findViewById(R.id.caption_in_post);
         }
     }
