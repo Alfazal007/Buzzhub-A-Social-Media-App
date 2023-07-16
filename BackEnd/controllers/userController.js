@@ -337,10 +337,28 @@ const updateNormalInfo = async (req, res) => {
     }
     let updatedUser;
     try {
-      updatedUser = await User.findOneAndUpdate({ _id: req.id }, changeObject, {
-        new: true,
-        runValidators: true,
-      });
+      updatedUser = await User.findOneAndUpdate(
+        { _id: req.id },
+        changeObject,
+        { new: true, runValidators: true }
+      );
+      console.log("User info updated");
+
+    } catch (err) {
+      res.status(401).json(err.message);
+    }
+    try {
+      const posts = await Post.find({ userId: req.id });
+      const afterUpdate = await Promise.all(posts.map(async (singlePost) => {
+        if (req.file) {
+          singlePost.profilePic = img;
+        }
+        if (req.body.username) {
+          singlePost.username = req.body.username;
+        }
+        singlePost.save();
+      }));
+      console.log("Posts profile pic updated");
     } catch (err) {
       res.status(401).json(err.message);
     }
@@ -349,7 +367,6 @@ const updateNormalInfo = async (req, res) => {
     res.status(500).json(err.message);
   }
 };
-
 const removeBgIMG = async (req, res) => {
   try {
     const afterUpdate = await User.findOneAndUpdate(
