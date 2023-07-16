@@ -34,7 +34,7 @@ public class landingActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 SharedPreferences preferences = getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
-                preferences.edit().putString("URL","http://192.168.1.15:8800").apply();
+                preferences.edit().putString("URL","http://192.168.231.76:8800").apply();
 
                 Intent log = new Intent(landingActivity.this, loginpageActivity.class);
                 startActivity(log);

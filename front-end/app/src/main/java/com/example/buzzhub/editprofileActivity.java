@@ -180,14 +180,12 @@ public class editprofileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    // Permission not granted, request it
+                 // Permission not granted, request it
                     Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/*");
                     startActivityForResult(intent, galreq);
                     filech.dismiss();
-                }
+
 
             }
         });
